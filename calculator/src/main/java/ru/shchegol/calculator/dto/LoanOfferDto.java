@@ -1,8 +1,11 @@
 package ru.shchegol.calculator.dto;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
+@Data
 public class LoanOfferDto {
     private UUID statementId;
     private BigDecimal requestedAmount;
@@ -12,4 +15,12 @@ public class LoanOfferDto {
     private BigDecimal rate;
     private Boolean isInsuranceEnabled;
     private Boolean isSalaryClient;
+
+    public void setInsuranceEnabled(boolean isInsuranceEnabled) {
+        this.isInsuranceEnabled = isInsuranceEnabled;
+    }
+
+    public void setSalaryClient(boolean isSalaryClient) {
+        this.isSalaryClient = isSalaryClient;
+    }
 }
