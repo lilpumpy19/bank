@@ -1,8 +1,6 @@
 package ru.shchegol.calculator.service.impl;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,6 +10,7 @@ import ru.shchegol.calculator.dto.PaymentScheduleElementDto;
 import ru.shchegol.calculator.dto.ScoringDataDto;
 import ru.shchegol.calculator.dto.dependencies.Gender;
 import ru.shchegol.calculator.dto.dependencies.MaritalStatus;
+import ru.shchegol.calculator.exception.CreditRefusalException;
 import ru.shchegol.calculator.service.CalculatorCreditService;
 
 import javax.validation.Valid;
@@ -23,7 +22,9 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Service
 public class CalculatorCreditServiceImpl implements CalculatorCreditService {
+
     private CreditDto credit;
+
     @Value("${base.rate}")
     private BigDecimal BASE_RATE;
     @Value("${insurance.cost}")
@@ -35,11 +36,9 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
 
     @Override
     public ResponseEntity<CreditDto> calcCredit(ScoringDataDto scoringData) {
-        this.createCredit(scoringData);
+        createCredit(scoringData);
         return ResponseEntity.ok(credit);
     }
-
-
 
     private void createCredit(ScoringDataDto scoringData) {
         credit = new CreditDto(BASE_RATE);
@@ -47,40 +46,24 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
         credit.setIsInsuranceEnabled(scoringData.getIsInsuranceEnabled());
         credit.setIsSalaryClient(scoringData.getIsSalaryClient());
 
-        BigDecimal principal = scoringData.getAmount();
-        if (scoringData.getIsInsuranceEnabled()) {
-            principal = principal.add(INSURANCE_COST);
-        }
-        this.checkInsurance(scoringData);
-        this.checkIsSalaryClient(scoringData);
-        this.checkMarialStatus(scoringData);
-        this.checkEmployment(scoringData);
-        this.checkAge(scoringData);
-        this.checkGender(scoringData);
+        BigDecimal principal = calculatePrincipal(scoringData.getAmount(), scoringData.getIsInsuranceEnabled());
+        applyScoringAdjustments(scoringData);
 
-        BigDecimal rate = credit.getRate().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-        BigDecimal monthlyRate = rate.divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP);
+        BigDecimal rate = credit.getRate().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+        BigDecimal monthlyRate = rate.divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
 
         BigDecimal monthlyPayment = calculateAnnuityMonthlyPayment(principal, monthlyRate, credit.getTerm());
         BigDecimal totalAmount = monthlyPayment.multiply(BigDecimal.valueOf(credit.getTerm()));
 
         credit.setMonthlyPayment(monthlyPayment);
         credit.setAmount(totalAmount);
-        credit.setPsk(totalAmount.divide(scoringData.getAmount(),2, RoundingMode.HALF_UP).
-                multiply(BigDecimal.valueOf(100)).subtract(BigDecimal.valueOf(100)));
+        credit.setPsk(calculatePSK(totalAmount, scoringData.getAmount()));
 
+        generatePaymentSchedule(scoringData, principal, monthlyRate, monthlyPayment);
+    }
 
-        BigDecimal remainingDebt = principal;
-        for (int i = 1; i <= scoringData.getTerm(); i++) {
-
-            BigDecimal interestPayment = remainingDebt.multiply(monthlyRate).setScale(2, RoundingMode.HALF_UP);
-            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment).setScale(2, RoundingMode.HALF_UP);
-            remainingDebt = remainingDebt.subtract(debtPayment).setScale(2, RoundingMode.HALF_UP);
-
-            credit.addPaymentScheduleElement(new PaymentScheduleElementDto(i, LocalDate.now().plusMonths(i),
-                    monthlyPayment, interestPayment, debtPayment, remainingDebt));
-        }
-
+    private BigDecimal calculatePrincipal(BigDecimal amount, boolean isInsuranceEnabled) {
+        return isInsuranceEnabled ? amount.add(INSURANCE_COST) : amount;
     }
 
     private BigDecimal calculateAnnuityMonthlyPayment(BigDecimal principal, BigDecimal monthlyRate, int term) {
@@ -88,8 +71,59 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
                 .pow(term, new MathContext(10, RoundingMode.HALF_UP));
         BigDecimal numerator = principal.multiply(monthlyRate).multiply(onePlusRatePowerTerm);
         BigDecimal denominator = onePlusRatePowerTerm.subtract(BigDecimal.ONE);
-        return numerator.divide(denominator, 2, RoundingMode.HALF_UP);
+        return numerator.divide(denominator, 10, RoundingMode.HALF_UP);
     }
+
+    private BigDecimal calculatePSK(BigDecimal totalAmount, BigDecimal amount) {
+        return totalAmount.divide(amount, 10, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100))
+                .subtract(BigDecimal.valueOf(100));
+    }
+
+    private void generatePaymentSchedule(ScoringDataDto scoringData, BigDecimal principal, BigDecimal monthlyRate, BigDecimal monthlyPayment) {
+        BigDecimal remainingDebt = principal;
+        for (int i = 1; i <= scoringData.getTerm(); i++) {
+            BigDecimal interestPayment = remainingDebt.multiply(monthlyRate).setScale(10, RoundingMode.HALF_UP);
+            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment).setScale(10, RoundingMode.HALF_UP);
+            remainingDebt = remainingDebt.subtract(debtPayment).setScale(10, RoundingMode.HALF_UP);
+
+            credit.addPaymentScheduleElement(new PaymentScheduleElementDto(
+                    i, LocalDate.now().plusMonths(i), monthlyPayment, interestPayment, debtPayment, remainingDebt));
+        }
+    }
+
+
+
+    private void applyScoringAdjustments(ScoringDataDto scoringData) {
+        checkSalary(scoringData);
+        checkWorkExperience(scoringData.getEmployment());
+        checkIsSalaryClient(scoringData);
+        checkInsurance(scoringData);
+        checkMaritalStatus(scoringData);
+        checkEmployment(scoringData);
+        checkAge(scoringData);
+        checkGender(scoringData);
+    }
+
+    private void checkWorkExperience(EmploymentDto employment) {
+        if (employment.getWorkExperienceCurrent() < 3 || employment.getWorkExperienceTotal() < 18) {
+            throw new CreditRefusalException("Refusal due to negative work experience");
+        }
+
+
+    }
+
+    private void checkSalary(ScoringDataDto scoringData) {
+        BigDecimal salary = scoringData.getEmployment().getSalary();
+        BigDecimal amount = scoringData.getAmount();
+        BigDecimal threshold = salary.multiply(BigDecimal.valueOf(25));
+
+        if (threshold.compareTo(amount) < 0) {
+            throw new CreditRefusalException("Refusal due to insufficient salary");
+        }
+    }
+
+
     private void checkIsSalaryClient(ScoringDataDto scoringData) {
         if (scoringData.getIsSalaryClient()) {
             credit.setRate(SALARY_CLIENT_DISCOUNT.negate());
@@ -101,7 +135,8 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
             credit.setRate(INSURANCE_DISCOUNT.negate());
         }
     }
-    private void checkMarialStatus(ScoringDataDto scoringData) {
+
+    private void checkMaritalStatus(ScoringDataDto scoringData) {
         MaritalStatus maritalStatus = scoringData.getMaritalStatus();
         switch (maritalStatus) {
             case SINGLE -> credit.setRate(BigDecimal.valueOf(1));
@@ -113,37 +148,32 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
         EmploymentDto employment = scoringData.getEmployment();
 
         switch (employment.getEmploymentStatus()) {
-            // todo Придумать логику отказа case UNEMPLOYED
+            case UNEMPLOYED -> throw new CreditRefusalException("Refusal due to unemployed");
             case SELF_EMPLOYED -> credit.setRate(BigDecimal.valueOf(1));
             case BUSINESS_OWNER -> credit.setRate(BigDecimal.valueOf(2));
-
         }
 
-        switch (employment.getPosition()){
+        switch (employment.getPosition()) {
             case MANAGER -> credit.setRate(BigDecimal.valueOf(-2));
             case TOP_MANAGER -> credit.setRate(BigDecimal.valueOf(-3));
         }
-
-
     }
 
     private void checkAge(ScoringDataDto scoringData) {
         int age = LocalDate.now().getYear() - scoringData.getBirthdate().getYear();
-        if (age < 18|| age > 65) {
-            //todo Придумать логику отказа
+        if (age < 18 || age > 65) {
+            throw new CreditRefusalException("Refusal due to age");
         }
     }
 
     private void checkGender(ScoringDataDto scoringData) {
         int age = LocalDate.now().getYear() - scoringData.getBirthdate().getYear();
         Gender gender = scoringData.getGender();
-        if (age >32 && age < 60 && gender==Gender.FEMALE) {
+        if (age > 32 && age < 60 && gender == Gender.FEMALE) {
             credit.setRate(BigDecimal.valueOf(-3));
-        }
-        if (age >30 && age < 55 && gender==Gender.MALE) {
+        } else if (age > 30 && age < 55 && gender == Gender.MALE) {
             credit.setRate(BigDecimal.valueOf(-3));
-        }
-        if (gender==Gender.NON_BINARY){
+        } else if (gender == Gender.NON_BINARY) {
             credit.setRate(BigDecimal.valueOf(7));
         }
     }

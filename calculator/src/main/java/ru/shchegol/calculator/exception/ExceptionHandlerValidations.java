@@ -1,6 +1,7 @@
 package ru.shchegol.calculator.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +26,13 @@ public class ExceptionHandlerValidations {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ExceptionHandler(CreditRefusalException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleCreditRefusalException(CreditRefusalException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
 }
