@@ -31,10 +31,7 @@ public class CalculatorOfferServiceImpl implements CalculatorOfferService {
 
     @Override
     public ResponseEntity<List<LoanOfferDto>> calcLoanOffers(LoanStatementRequestDto loanStatement) {
-        if (!this.prescoring(loanStatement)) return ResponseEntity.badRequest().build();
-
         List<LoanOfferDto> offers = createOffers(loanStatement);
-
         return ResponseEntity.ok(offers);
     }
 
@@ -95,53 +92,4 @@ public class CalculatorOfferServiceImpl implements CalculatorOfferService {
         BigDecimal denominator = onePlusRatePowerTerm.subtract(BigDecimal.ONE);
         return numerator.divide(denominator, 2, RoundingMode.HALF_UP);
     }
-
-
-    private boolean prescoring(LoanStatementRequestDto loanStatement) {
-        boolean checkNames = this.checkNames(loanStatement);
-        boolean checkAmount = this.checkAmount(loanStatement);
-        boolean checkTerm = this.checkTerm(loanStatement);
-        boolean checkBirthdate = this.checkBirthdate(loanStatement);
-        boolean checkEmail = this.checkEmail(loanStatement);
-        boolean checkPassport = this.checkPassport(loanStatement);
-        return checkNames && checkAmount && checkTerm && checkBirthdate && checkEmail && checkPassport;
-    }
-
-
-
-    private boolean checkNames(LoanStatementRequestDto loanStatement) {
-        return isNameValid(loanStatement.getFirstName()) &&
-                isNameValid(loanStatement.getLastName()) &&
-                (loanStatement.getMiddleName() == null || isNameValid(loanStatement.getMiddleName()));
-    }
-
-    private boolean checkAmount(LoanStatementRequestDto loanStatement) {
-        return !(loanStatement.getAmount() == null ||
-                loanStatement.getAmount().compareTo(BigDecimal.valueOf(30000)) < 0);
-    }
-
-    private boolean checkTerm(LoanStatementRequestDto loanStatement) {
-        return (loanStatement.getTerm() == null || loanStatement.getTerm() > 6);
-    }
-
-    private boolean checkBirthdate(LoanStatementRequestDto loanStatement) {
-        return (loanStatement.getBirthdate() == null
-                || loanStatement.getBirthdate().isBefore(LocalDate.now().minusYears(18)));
-    }
-
-    private boolean checkEmail(LoanStatementRequestDto loanStatement) {
-        String emailPattern = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
-        return loanStatement.getEmail() != null && loanStatement.getEmail().matches(emailPattern);
-    }
-
-    private boolean checkPassport(LoanStatementRequestDto loanStatement) {
-        return loanStatement.getPassportSeries().length() == 4 && loanStatement.getPassportNumber().length() == 6;
-    }
-
-     boolean isNameValid(String name) {
-        return name != null && name.length() >= 2 && name.length() <= 30 && name.matches("[a-zA-Z]+");
-    }
-
-
-
 }
