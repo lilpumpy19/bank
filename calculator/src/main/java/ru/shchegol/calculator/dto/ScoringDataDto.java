@@ -46,10 +46,12 @@ public class ScoringDataDto {
 
     @NotBlank
     @Size(min = 4, max = 4)
+    @Pattern(regexp = "[0-9]+")
     private String passportSeries;
 
     @NotBlank
     @Size(min = 6, max = 6)
+    @Pattern(regexp = "[0-9]+")
     private String passportNumber;
 
     @NotNull
