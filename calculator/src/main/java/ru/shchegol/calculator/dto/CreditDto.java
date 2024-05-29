@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,11 +25,15 @@ public class CreditDto {
     public CreditDto(BigDecimal baseRate) {
         this.rate = baseRate;
         this.baseRate = baseRate;
+        this.paymentSchedule = new ArrayList<PaymentScheduleElementDto>();
     }
 
     public void setRate(BigDecimal rate) {
         this.rate =this.rate.add(rate);
-        System.out.println("setRate: " + this.rate+" "+rate);
+    }
+
+    public void addPaymentScheduleElement(PaymentScheduleElementDto element) {
+        this.paymentSchedule.add(element);
     }
 }
 

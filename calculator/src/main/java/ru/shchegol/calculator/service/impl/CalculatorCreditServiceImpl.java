@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.shchegol.calculator.dto.CreditDto;
 import ru.shchegol.calculator.dto.EmploymentDto;
+import ru.shchegol.calculator.dto.PaymentScheduleElementDto;
 import ru.shchegol.calculator.dto.ScoringDataDto;
 import ru.shchegol.calculator.dto.dependencies.Gender;
 import ru.shchegol.calculator.dto.dependencies.MaritalStatus;
@@ -56,8 +57,8 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
         this.checkAge(scoringData);
         this.checkGender(scoringData);
 
-        BigDecimal rate = credit.getRate().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
-        BigDecimal monthlyRate = rate.divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
+        BigDecimal rate = credit.getRate().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal monthlyRate = rate.divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP);
 
         BigDecimal monthlyPayment = calculateAnnuityMonthlyPayment(principal, monthlyRate, credit.getTerm());
         BigDecimal totalAmount = monthlyPayment.multiply(BigDecimal.valueOf(credit.getTerm()));
@@ -66,6 +67,18 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
         credit.setAmount(totalAmount);
         credit.setPsk(totalAmount.divide(scoringData.getAmount(),2, RoundingMode.HALF_UP).
                 multiply(BigDecimal.valueOf(100)).subtract(BigDecimal.valueOf(100)));
+
+
+        BigDecimal remainingDebt = principal;
+        for (int i = 1; i <= scoringData.getTerm(); i++) {
+
+            BigDecimal interestPayment = remainingDebt.multiply(monthlyRate).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment).setScale(2, RoundingMode.HALF_UP);
+            remainingDebt = remainingDebt.subtract(debtPayment).setScale(2, RoundingMode.HALF_UP);
+
+            credit.addPaymentScheduleElement(new PaymentScheduleElementDto(i, LocalDate.now().plusMonths(i),
+                    monthlyPayment, interestPayment, debtPayment, remainingDebt));
+        }
 
     }
 
