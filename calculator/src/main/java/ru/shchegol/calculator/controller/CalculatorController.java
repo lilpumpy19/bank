@@ -10,6 +10,7 @@ import ru.shchegol.calculator.dto.CreditDto;
 import ru.shchegol.calculator.dto.LoanOfferDto;
 import ru.shchegol.calculator.dto.LoanStatementRequestDto;
 import ru.shchegol.calculator.dto.ScoringDataDto;
+import ru.shchegol.calculator.service.CalculatorCreditService;
 import ru.shchegol.calculator.service.CalculatorOfferService;
 
 import java.util.List;
@@ -19,10 +20,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CalculatorController {
     private final CalculatorOfferService calculatorService;
-//    @PostMapping("/calc")
-//    public ResponseEntity<CreditDto> calc(@RequestBody ScoringDataDto scoringData) {
-//        return calculatorService.calcCredit(scoringData);
-//    }
+    private final CalculatorCreditService creditService;
+    @PostMapping("/calc")
+    public ResponseEntity<CreditDto> calc(@RequestBody ScoringDataDto scoringData) {
+        return creditService.calcCredit(scoringData);
+    }
 
     @PostMapping("/offers")
     public  ResponseEntity<List<LoanOfferDto>> offers(@RequestBody LoanStatementRequestDto loanStatement) {

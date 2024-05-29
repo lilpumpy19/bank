@@ -1,11 +1,13 @@
 package ru.shchegol.calculator.dto;
 
+import lombok.Data;
 import ru.shchegol.calculator.dto.dependencies.Gender;
 import ru.shchegol.calculator.dto.dependencies.MaritalStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Data
 public class ScoringDataDto {
     private BigDecimal amount;
     private Integer term;
