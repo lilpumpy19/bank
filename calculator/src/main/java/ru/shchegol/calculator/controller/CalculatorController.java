@@ -1,6 +1,7 @@
 package ru.shchegol.calculator.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import ru.shchegol.calculator.service.CalculatorOfferService;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/calculator")
 @RequiredArgsConstructor
@@ -26,11 +28,18 @@ public class CalculatorController {
 
     @PostMapping("/calc")
     public ResponseEntity<CreditDto> calc(@Valid @RequestBody ScoringDataDto scoringData) {
-        return creditService.calcCredit(scoringData);
+        log.info("Request: {}", scoringData);
+        ResponseEntity<CreditDto> response = creditService.calcCredit(scoringData);
+        log.info("Response: {}", response);
+        return response;
     }
 
     @PostMapping("/offers")
     public ResponseEntity<List<LoanOfferDto>> offers(@Valid @RequestBody LoanStatementRequestDto loanStatement) {
-        return calculatorService.calcLoanOffers(loanStatement);
+        log.info("Request: {}", loanStatement);
+        ResponseEntity<List<LoanOfferDto>> response = calculatorService.calcLoanOffers(loanStatement);
+        log.info("Response: {}", response);
+        return response;
     }
+
 }
