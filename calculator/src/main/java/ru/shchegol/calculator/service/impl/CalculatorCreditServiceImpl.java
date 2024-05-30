@@ -10,6 +10,7 @@ import ru.shchegol.calculator.dto.PaymentScheduleElementDto;
 import ru.shchegol.calculator.dto.ScoringDataDto;
 import ru.shchegol.calculator.dto.dependencies.Gender;
 import ru.shchegol.calculator.dto.dependencies.MaritalStatus;
+import ru.shchegol.calculator.exception.CreditRefusalException;
 import ru.shchegol.calculator.service.CalculatorCreditService;
 
 import javax.validation.Valid;
@@ -91,7 +92,11 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
         }
     }
 
+
+
     private void applyScoringAdjustments(ScoringDataDto scoringData) {
+        checkSalary(scoringData);
+        checkWorkExperience(scoringData.getEmployment());
         checkIsSalaryClient(scoringData);
         checkInsurance(scoringData);
         checkMaritalStatus(scoringData);
@@ -99,6 +104,25 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
         checkAge(scoringData);
         checkGender(scoringData);
     }
+
+    private void checkWorkExperience(EmploymentDto employment) {
+        if (employment.getWorkExperienceCurrent() < 3 || employment.getWorkExperienceTotal() < 18) {
+            throw new CreditRefusalException("Refusal due to negative work experience");
+        }
+
+
+    }
+
+    private void checkSalary(ScoringDataDto scoringData) {
+        BigDecimal salary = scoringData.getEmployment().getSalary();
+        BigDecimal amount = scoringData.getAmount();
+        BigDecimal threshold = salary.multiply(BigDecimal.valueOf(25));
+
+        if (threshold.compareTo(amount) < 0) {
+            throw new CreditRefusalException("Refusal due to insufficient salary");
+        }
+    }
+
 
     private void checkIsSalaryClient(ScoringDataDto scoringData) {
         if (scoringData.getIsSalaryClient()) {
@@ -124,7 +148,7 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
         EmploymentDto employment = scoringData.getEmployment();
 
         switch (employment.getEmploymentStatus()) {
-            // TODO: Add logic for refusal case UNEMPLOYED ->
+            case UNEMPLOYED -> throw new CreditRefusalException("Refusal due to unemployed");
             case SELF_EMPLOYED -> credit.setRate(BigDecimal.valueOf(1));
             case BUSINESS_OWNER -> credit.setRate(BigDecimal.valueOf(2));
         }
@@ -138,7 +162,7 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
     private void checkAge(ScoringDataDto scoringData) {
         int age = LocalDate.now().getYear() - scoringData.getBirthdate().getYear();
         if (age < 18 || age > 65) {
-            // TODO: Add logic for refusal
+            throw new CreditRefusalException("Refusal due to age");
         }
     }
 
