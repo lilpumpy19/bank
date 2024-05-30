@@ -11,7 +11,6 @@ import ru.shchegol.calculator.service.CalculatorOfferService;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,33 +36,25 @@ public class CalculatorOfferServiceImpl implements CalculatorOfferService {
 
     private List<LoanOfferDto> createOffers(LoanStatementRequestDto loanStatement) {
         List<LoanOfferDto> offers = new ArrayList<>();
-        offers.add(this.createOffer(loanStatement,true,true));
-        offers.add(this.createOffer(loanStatement,true,false));
-        offers.add(this.createOffer(loanStatement,false,true));
-        offers.add(this.createOffer(loanStatement,false,false));
+        offers.add(createOffer(loanStatement, true, true));
+        offers.add(createOffer(loanStatement, true, false));
+        offers.add(createOffer(loanStatement, false, true));
+        offers.add(createOffer(loanStatement, false, false));
         return offers;
     }
 
-    private LoanOfferDto createOffer(LoanStatementRequestDto loanStatement,
-                                     boolean insurance, boolean salaryClient) {
+    private LoanOfferDto createOffer(LoanStatementRequestDto loanStatement, boolean insurance, boolean salaryClient) {
         LoanOfferDto offer = new LoanOfferDto();
         offer.setStatementId(UUID.randomUUID());
         offer.setInsuranceEnabled(insurance);
         offer.setSalaryClient(salaryClient);
         offer.setTerm(loanStatement.getTerm());
         offer.setRequestedAmount(loanStatement.getAmount());
-        offer.setRate(this.calculateRate(salaryClient, insurance));
+        offer.setRate(calculateRate(salaryClient, insurance));
 
-        BigDecimal rate = offer.getRate().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
-        BigDecimal monthlyRate = rate.divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
-
-        BigDecimal principal = loanStatement.getAmount();
-        if (insurance) {
-            principal = principal.add(INSURANCE_COST);
-        }
-
-        BigDecimal monthlyPayment = calculateAnnuityMonthlyPayment(principal, monthlyRate, loanStatement.getTerm());
-        BigDecimal totalAmount = monthlyPayment.multiply(BigDecimal.valueOf(loanStatement.getTerm()));
+        BigDecimal principal = calculatePrincipal(loanStatement.getAmount(), insurance);
+        BigDecimal monthlyPayment = calculateMonthlyPayment(principal, offer.getRate(), loanStatement.getTerm());
+        BigDecimal totalAmount = calculateTotalAmount(monthlyPayment, loanStatement.getTerm());
 
         offer.setTotalAmount(totalAmount);
         offer.setMonthlyPayment(monthlyPayment);
@@ -72,17 +63,27 @@ public class CalculatorOfferServiceImpl implements CalculatorOfferService {
     }
 
     private BigDecimal calculateRate(boolean salaryClient, boolean insurance) {
-        BigDecimal baseRate = BASE_RATE;
+        BigDecimal rate = BASE_RATE;
+        if (salaryClient) rate = rate.subtract(SALARY_CLIENT_DISCOUNT);
+        if (insurance) rate = rate.subtract(INSURANCE_DISCOUNT);
+        return rate;
+    }
 
-        if (salaryClient) {
-            baseRate = baseRate.subtract(SALARY_CLIENT_DISCOUNT);
-        }
-
+    private BigDecimal calculatePrincipal(BigDecimal amount, boolean insurance) {
         if (insurance) {
-            baseRate = baseRate.subtract(INSURANCE_DISCOUNT);
+            return amount.add(INSURANCE_COST);
         }
+        return amount;
+    }
 
-        return baseRate;
+    private BigDecimal calculateMonthlyPayment(BigDecimal principal, BigDecimal annualRate, int term) {
+        BigDecimal monthlyRate = annualRate.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
+        return calculateAnnuityMonthlyPayment(principal, monthlyRate, term);
+    }
+
+    private BigDecimal calculateTotalAmount(BigDecimal monthlyPayment, int term) {
+        return monthlyPayment.multiply(BigDecimal.valueOf(term));
     }
 
     private BigDecimal calculateAnnuityMonthlyPayment(BigDecimal principal, BigDecimal monthlyRate, int term) {
