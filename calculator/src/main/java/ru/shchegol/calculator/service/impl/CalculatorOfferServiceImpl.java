@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.shchegol.calculator.dto.LoanOfferDto;
 import ru.shchegol.calculator.dto.LoanStatementRequestDto;
+import ru.shchegol.calculator.service.CalculateService;
 import ru.shchegol.calculator.service.CalculatorOfferService;
 
 import java.math.BigDecimal;
@@ -18,6 +19,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CalculatorOfferServiceImpl implements CalculatorOfferService {
+
+    private final CalculateService calculateService;
 
     @Value("${base.rate}")
     private BigDecimal BASE_RATE;
@@ -52,9 +55,10 @@ public class CalculatorOfferServiceImpl implements CalculatorOfferService {
         offer.setRequestedAmount(loanStatement.getAmount());
         offer.setRate(calculateRate(salaryClient, insurance));
 
-        BigDecimal principal = calculatePrincipal(loanStatement.getAmount(), insurance);
-        BigDecimal monthlyPayment = calculateMonthlyPayment(principal, offer.getRate(), loanStatement.getTerm());
-        BigDecimal totalAmount = calculateTotalAmount(monthlyPayment, loanStatement.getTerm());
+        BigDecimal principal = calculateService.calculatePrincipal(loanStatement.getAmount(), insurance);
+        BigDecimal monthlyPayment = calculateService.
+                calculateMonthlyPayment(principal, offer.getRate(), loanStatement.getTerm());
+        BigDecimal totalAmount = calculateService.calculateTotalAmount(monthlyPayment, loanStatement.getTerm());
 
         offer.setTotalAmount(totalAmount);
         offer.setMonthlyPayment(monthlyPayment);
@@ -69,28 +73,7 @@ public class CalculatorOfferServiceImpl implements CalculatorOfferService {
         return rate;
     }
 
-    private BigDecimal calculatePrincipal(BigDecimal amount, boolean insurance) {
-        if (insurance) {
-            return amount.add(INSURANCE_COST);
-        }
-        return amount;
-    }
 
-    private BigDecimal calculateMonthlyPayment(BigDecimal principal, BigDecimal annualRate, int term) {
-        BigDecimal monthlyRate = annualRate.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
-                .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
-        return calculateAnnuityMonthlyPayment(principal, monthlyRate, term);
-    }
 
-    private BigDecimal calculateTotalAmount(BigDecimal monthlyPayment, int term) {
-        return monthlyPayment.multiply(BigDecimal.valueOf(term));
-    }
 
-    private BigDecimal calculateAnnuityMonthlyPayment(BigDecimal principal, BigDecimal monthlyRate, int term) {
-        BigDecimal onePlusRatePowerTerm = monthlyRate.add(BigDecimal.ONE)
-                .pow(term, new MathContext(10, RoundingMode.HALF_UP));
-        BigDecimal numerator = principal.multiply(monthlyRate).multiply(onePlusRatePowerTerm);
-        BigDecimal denominator = onePlusRatePowerTerm.subtract(BigDecimal.ONE);
-        return numerator.divide(denominator, 2, RoundingMode.HALF_UP);
-    }
 }

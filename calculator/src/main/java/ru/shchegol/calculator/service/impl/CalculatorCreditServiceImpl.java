@@ -11,6 +11,7 @@ import ru.shchegol.calculator.dto.ScoringDataDto;
 import ru.shchegol.calculator.dto.dependencies.Gender;
 import ru.shchegol.calculator.dto.dependencies.MaritalStatus;
 import ru.shchegol.calculator.exception.CreditRefusalException;
+import ru.shchegol.calculator.service.CalculateService;
 import ru.shchegol.calculator.service.CalculatorCreditService;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 public class CalculatorCreditServiceImpl implements CalculatorCreditService {
 
     private CreditDto credit;
+    private final CalculateService calculateService;
 
     @Value("${base.rate}")
     private BigDecimal BASE_RATE;
@@ -41,38 +43,33 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
     }
 
     private void createCredit(ScoringDataDto scoringData) {
+
         credit = new CreditDto(BASE_RATE);
+
         credit.setTerm(scoringData.getTerm());
         credit.setIsInsuranceEnabled(scoringData.getIsInsuranceEnabled());
         credit.setIsSalaryClient(scoringData.getIsSalaryClient());
 
-        BigDecimal principal = calculatePrincipal(scoringData.getAmount(), scoringData.getIsInsuranceEnabled());
         applyScoringAdjustments(scoringData);
 
-        BigDecimal rate = credit.getRate().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
-        BigDecimal monthlyRate = rate.divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
+        BigDecimal principal = calculateService.
+                calculatePrincipal(scoringData.getAmount(), scoringData.getIsInsuranceEnabled());
 
-        BigDecimal monthlyPayment = calculateAnnuityMonthlyPayment(principal, monthlyRate, credit.getTerm());
-        BigDecimal totalAmount = monthlyPayment.multiply(BigDecimal.valueOf(credit.getTerm()));
+        BigDecimal rate = credit.getRate().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
+
+        BigDecimal monthlyPayment = calculateService.
+                calculateMonthlyPayment(principal, credit.getRate(), credit.getTerm());
+
+        BigDecimal totalAmount = calculateService.calculateTotalAmount(monthlyPayment, credit.getTerm());
 
         credit.setMonthlyPayment(monthlyPayment);
         credit.setAmount(totalAmount);
         credit.setPsk(calculatePSK(totalAmount, scoringData.getAmount()));
 
-        generatePaymentSchedule(scoringData, principal, monthlyRate, monthlyPayment);
+        generatePaymentSchedule(scoringData, principal, rate, monthlyPayment);
     }
 
-    private BigDecimal calculatePrincipal(BigDecimal amount, boolean isInsuranceEnabled) {
-        return isInsuranceEnabled ? amount.add(INSURANCE_COST) : amount;
-    }
-
-    private BigDecimal calculateAnnuityMonthlyPayment(BigDecimal principal, BigDecimal monthlyRate, int term) {
-        BigDecimal onePlusRatePowerTerm = monthlyRate.add(BigDecimal.ONE)
-                .pow(term, new MathContext(10, RoundingMode.HALF_UP));
-        BigDecimal numerator = principal.multiply(monthlyRate).multiply(onePlusRatePowerTerm);
-        BigDecimal denominator = onePlusRatePowerTerm.subtract(BigDecimal.ONE);
-        return numerator.divide(denominator, 10, RoundingMode.HALF_UP);
-    }
 
     private BigDecimal calculatePSK(BigDecimal totalAmount, BigDecimal amount) {
         return totalAmount.divide(amount, 10, RoundingMode.HALF_UP)
@@ -80,10 +77,11 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
                 .subtract(BigDecimal.valueOf(100));
     }
 
-    private void generatePaymentSchedule(ScoringDataDto scoringData, BigDecimal principal, BigDecimal monthlyRate, BigDecimal monthlyPayment) {
+    private void generatePaymentSchedule(ScoringDataDto scoringData, BigDecimal principal,
+                                         BigDecimal rate, BigDecimal monthlyPayment) {
         BigDecimal remainingDebt = principal;
         for (int i = 1; i <= scoringData.getTerm(); i++) {
-            BigDecimal interestPayment = remainingDebt.multiply(monthlyRate).setScale(10, RoundingMode.HALF_UP);
+            BigDecimal interestPayment = remainingDebt.multiply(rate).setScale(10, RoundingMode.HALF_UP);
             BigDecimal debtPayment = monthlyPayment.subtract(interestPayment).setScale(10, RoundingMode.HALF_UP);
             remainingDebt = remainingDebt.subtract(debtPayment).setScale(10, RoundingMode.HALF_UP);
 
@@ -91,8 +89,6 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
                     i, LocalDate.now().plusMonths(i), monthlyPayment, interestPayment, debtPayment, remainingDebt));
         }
     }
-
-
 
     private void applyScoringAdjustments(ScoringDataDto scoringData) {
         checkSalary(scoringData);
