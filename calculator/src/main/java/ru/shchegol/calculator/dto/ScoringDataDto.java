@@ -2,8 +2,8 @@ package ru.shchegol.calculator.dto;
 
 import lombok.Data;
 import ru.shchegol.calculator.anno.MinAge;
-import ru.shchegol.calculator.dto.dependencies.Gender;
-import ru.shchegol.calculator.dto.dependencies.MaritalStatus;
+import ru.shchegol.calculator.dto.enums.Gender;
+import ru.shchegol.calculator.dto.enums.MaritalStatus;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;

@@ -8,15 +8,13 @@ import ru.shchegol.calculator.dto.CreditDto;
 import ru.shchegol.calculator.dto.EmploymentDto;
 import ru.shchegol.calculator.dto.PaymentScheduleElementDto;
 import ru.shchegol.calculator.dto.ScoringDataDto;
-import ru.shchegol.calculator.dto.dependencies.Gender;
-import ru.shchegol.calculator.dto.dependencies.MaritalStatus;
+import ru.shchegol.calculator.dto.enums.Gender;
+import ru.shchegol.calculator.dto.enums.MaritalStatus;
 import ru.shchegol.calculator.exception.CreditRefusalException;
 import ru.shchegol.calculator.service.CalculateService;
 import ru.shchegol.calculator.service.CalculatorCreditService;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 

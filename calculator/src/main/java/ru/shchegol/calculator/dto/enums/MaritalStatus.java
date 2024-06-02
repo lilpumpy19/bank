@@ -1,4 +1,4 @@
-package ru.shchegol.calculator.dto.dependencies;
+package ru.shchegol.calculator.dto.enums;
 
 public enum MaritalStatus {
     SINGLE,

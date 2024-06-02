@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class CreditDto {
     private BigDecimal amount;
     private Integer term;
@@ -29,7 +30,7 @@ public class CreditDto {
     }
 
     public void setRate(BigDecimal rate) {
-        this.rate =this.rate.add(rate);
+        this.rate = this.rate.add(rate);
     }
 
     public void addPaymentScheduleElement(PaymentScheduleElementDto element) {

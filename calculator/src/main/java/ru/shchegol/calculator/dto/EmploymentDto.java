@@ -1,8 +1,8 @@
 package ru.shchegol.calculator.dto;
 
 import lombok.Data;
-import ru.shchegol.calculator.dto.dependencies.EmploymentStatus;
-import ru.shchegol.calculator.dto.dependencies.Position;
+import ru.shchegol.calculator.dto.enums.EmploymentStatus;
+import ru.shchegol.calculator.dto.enums.Position;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
