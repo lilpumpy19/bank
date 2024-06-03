@@ -53,8 +53,8 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
         BigDecimal principal = calculateService.
                 calculatePrincipal(scoringData.getAmount(), scoringData.getIsInsuranceEnabled());
 
-        BigDecimal rate = credit.getRate().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
-                .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
+        BigDecimal rate = credit.getRate().divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(12), 4, RoundingMode.HALF_UP);
 
         BigDecimal monthlyPayment = calculateService.
                 calculateMonthlyPayment(principal, credit.getRate(), credit.getTerm());
@@ -70,7 +70,7 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
 
 
     private BigDecimal calculatePSK(BigDecimal totalAmount, BigDecimal amount) {
-        return totalAmount.divide(amount, 10, RoundingMode.HALF_UP)
+        return totalAmount.divide(amount, 4, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100))
                 .subtract(BigDecimal.valueOf(100));
     }
@@ -79,9 +79,9 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
                                          BigDecimal rate, BigDecimal monthlyPayment) {
         BigDecimal remainingDebt = principal;
         for (int i = 1; i <= scoringData.getTerm(); i++) {
-            BigDecimal interestPayment = remainingDebt.multiply(rate).setScale(10, RoundingMode.HALF_UP);
-            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment).setScale(10, RoundingMode.HALF_UP);
-            remainingDebt = remainingDebt.subtract(debtPayment).setScale(10, RoundingMode.HALF_UP);
+            BigDecimal interestPayment = remainingDebt.multiply(rate).setScale(4, RoundingMode.HALF_UP);
+            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment).setScale(4, RoundingMode.HALF_UP);
+            remainingDebt = remainingDebt.subtract(debtPayment).setScale(4, RoundingMode.HALF_UP);
 
             credit.addPaymentScheduleElement(new PaymentScheduleElementDto(
                     i, LocalDate.now().plusMonths(i), monthlyPayment, interestPayment, debtPayment, remainingDebt));

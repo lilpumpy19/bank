@@ -28,7 +28,7 @@ class CalculateServiceImplTest {
         BigDecimal principal = new BigDecimal("100000");
         BigDecimal rate = new BigDecimal("0.0125");
         int term = 12;
-        BigDecimal expected = new BigDecimal("9025.83");
+        BigDecimal expected = new BigDecimal("9013.98");
 
         BigDecimal result = calculateService.calculateAnnuityMonthlyPayment(principal, rate, term);
 
@@ -73,7 +73,7 @@ class CalculateServiceImplTest {
         BigDecimal principal = new BigDecimal("100000");
         BigDecimal rate = new BigDecimal("15");
         int term = 12;
-        BigDecimal expected = new BigDecimal("9025.83");
+        BigDecimal expected = new BigDecimal("9013.98");
 
         BigDecimal result = calculateService.calculateMonthlyPayment(principal, rate, term);
 

@@ -18,7 +18,7 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public BigDecimal calculateAnnuityMonthlyPayment(BigDecimal principal, BigDecimal rate, int term) {
         BigDecimal onePlusRatePowerTerm = rate.add(BigDecimal.ONE)
-                .pow(term, new MathContext(10, RoundingMode.HALF_UP));
+                .pow(term, new MathContext(4, RoundingMode.HALF_UP));
         BigDecimal numerator = principal.multiply(rate).multiply(onePlusRatePowerTerm);
         BigDecimal denominator = onePlusRatePowerTerm.subtract(BigDecimal.ONE);
         return numerator.divide(denominator, 2, RoundingMode.HALF_UP);
@@ -34,8 +34,8 @@ public class CalculateServiceImpl implements CalculateService {
     }
     @Override
     public BigDecimal calculateMonthlyPayment(BigDecimal principal, BigDecimal rate, int term) {
-        BigDecimal monthlyRate = rate.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
-                .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
+        BigDecimal monthlyRate = rate.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(12), 4, RoundingMode.HALF_UP);
         return this.calculateAnnuityMonthlyPayment(principal, monthlyRate, term);
     }
 }
