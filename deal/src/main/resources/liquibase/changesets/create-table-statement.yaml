@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-statement
+      author: lilpumpy19
+      changes:
+        - createTable:
+            tableName: statement
+            columns:
+              - column:
+                  name: statement_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: UUID
+                  constraints:
+                    foreignKey: true
+                    references: client(client_id)
+                    foreignKeyName: statement_client_id_fk
+              - column:
+                  name: credit_id
+                  type: UUID
+                  constraints:
+                    foreignKey: true
+                    references: credit(credit_id)
+                    foreignKeyName: statement_credit_id_fk
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP
+              - column:
+                  name: applied_offer
+                  type: JSONB
+              - column:
+                  name: sign_date
+                  type: TIMESTAMP
+              - column:
+                  name: ses_code
+                  type: INTEGER
+              - column:
+                  name: status_history
+                  type: JSONB

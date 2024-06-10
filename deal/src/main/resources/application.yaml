@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/deal
+    username: postgres
+    password: 0990
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show_sql: true
+  main:
+    web-application-type: servlet
+  liquibase:
+    change-log: classpath:liquibase/changelog.yaml
+    enabled: true
