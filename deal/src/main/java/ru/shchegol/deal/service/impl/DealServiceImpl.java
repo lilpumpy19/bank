@@ -24,6 +24,7 @@ import ru.shchegol.deal.service.DealService;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -58,8 +59,6 @@ public class DealServiceImpl implements DealService {
                 client.setBirthDate(request.getBirthdate());
                 client.setPassport(new Passport(request.getPassportSeries(), request.getPassportNumber()));
                 client.setEmployment(new Employment());
-
-
         return client;
     }
 
@@ -67,9 +66,9 @@ public class DealServiceImpl implements DealService {
         Statement statement = new Statement();
         statement.setClientId(client);
         statement.setCreationDate(new Timestamp(System.currentTimeMillis()));
-        statement.setStatus(ApplicationStatus.DOCUMENT_CREATED);
+        statement.setStatus(ApplicationStatus.PREPARE_DOCUMENTS);
         statement.addStatusHistory(
-                new StatusHistory("ok",
+                new StatusHistory("prepare_documents",
                 new Timestamp(System.currentTimeMillis()),
                         ChangeType.AUTOMATIC));
         return statement;
@@ -88,6 +87,7 @@ public class DealServiceImpl implements DealService {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         }else {
+            //todo обработать исключение
             System.out.println("ERROR");
             return List.of();
         }
@@ -100,11 +100,44 @@ public class DealServiceImpl implements DealService {
         }
     }
 
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public void selectLoanOffer(LoanOfferDto offer) {
+        Optional<Statement> optionalStatement = statementRepository.findById(offer.getStatementId());
 
+        if (optionalStatement.isPresent()) {
+            Statement statement = optionalStatement.get();
+            statement.setStatus(ApplicationStatus.DOCUMENT_CREATED);
+            statement.addStatusHistory(
+                    new StatusHistory("document_created",
+                            new Timestamp(System.currentTimeMillis()),
+                            ChangeType.AUTOMATIC));
+            statement.setAppliedOffer(offer);
+            statementRepository.save(statement);
+        }else {
+            System.out.println("ERROR");
+            //todo обработать исключение
+        }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void finishRegistrationAndCalculate(String statementId, FinishRegistrationRequestDto request) {
 
