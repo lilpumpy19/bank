@@ -1,10 +1,11 @@
 package ru.shchegol.deal.dto;
 
+import lombok.Data;
 import ru.shchegol.deal.entity.enums.Gender;
 import ru.shchegol.deal.entity.enums.MaritalStatus;
 
 import java.time.LocalDate;
-
+@Data
 public class FinishRegistrationRequestDto {
 
     private Gender gender;
