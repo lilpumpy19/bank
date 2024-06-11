@@ -1,8 +1,6 @@
 package ru.shchegol.deal.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import ru.shchegol.deal.dto.LoanOfferDto;
 import ru.shchegol.deal.entity.enums.ApplicationStatus;
@@ -15,7 +13,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "statement")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Statement {
@@ -48,7 +47,7 @@ public class Statement {
     private Timestamp signDate;
 
     @Column(name = "ses_code")
-    private int sesCode;
+    private Integer sesCode;
 
     @Column(columnDefinition = "jsonb",name = "status_history")
     @ElementCollection

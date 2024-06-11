@@ -1,8 +1,6 @@
 package ru.shchegol.deal.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import ru.shchegol.deal.entity.enums.Gender;
 import ru.shchegol.deal.entity.enums.MaritalStatus;
@@ -12,7 +10,8 @@ import ru.shchegol.deal.entity.jsonb.Passport;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -50,7 +49,7 @@ public class Client {
     private MaritalStatus maritalStatus;
 
     @Column(name = "dependent_amount")
-    private int dependentAmount;
+    private Integer dependentAmount;
 
     @Column(columnDefinition = "jsonb",name = "passport")
     @Embedded

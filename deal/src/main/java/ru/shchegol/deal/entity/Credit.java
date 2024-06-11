@@ -1,8 +1,6 @@
 package ru.shchegol.deal.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import ru.shchegol.deal.dto.PaymentScheduleElementDto;
 import ru.shchegol.deal.entity.enums.CreditStatus;
@@ -14,7 +12,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "credit")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Credit {
@@ -28,7 +27,7 @@ public class Credit {
     private BigDecimal amount;
 
     @Column(name = "term")
-    private int term;
+    private Integer term;
 
     @Column(name = "monthly_payment")
     private BigDecimal monthlyPayment;

@@ -1,17 +1,15 @@
 package ru.shchegol.deal.entity.jsonb;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-//import org.hibernate.annotations.TypeDef;
+import lombok.*;
 import ru.shchegol.deal.entity.enums.ChangeType;
 
 
 import javax.persistence.Embeddable;
 import java.sql.Timestamp;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
