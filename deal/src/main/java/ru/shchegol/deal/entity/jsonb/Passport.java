@@ -17,4 +17,9 @@ public class Passport {
     private String Number;
     private String IssueBranch;
     private Date IssueDate;
+
+    public Passport(String series, String number) {
+        Series = series;
+        Number = number;
+    }
 }

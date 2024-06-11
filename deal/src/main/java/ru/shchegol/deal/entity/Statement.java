@@ -8,6 +8,7 @@ import ru.shchegol.deal.entity.jsonb.StatusHistory;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +17,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Statement {
     @Id
     @Column(name = "statement_id")
@@ -53,4 +53,11 @@ public class Statement {
     @ElementCollection
     private List<StatusHistory> statusHistory;
 
+    public Statement() {
+        statusHistory = new ArrayList<>();
+    }
+
+    public void addStatusHistory(StatusHistory statusHistory){
+        this.statusHistory.add(statusHistory);
+    }
 }

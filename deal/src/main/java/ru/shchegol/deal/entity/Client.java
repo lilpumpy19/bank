@@ -8,6 +8,7 @@ import ru.shchegol.deal.entity.jsonb.Employment;
 import ru.shchegol.deal.entity.jsonb.Passport;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 @Getter
@@ -16,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "client")
+@Builder
 public class Client {
 
 
@@ -26,19 +28,19 @@ public class Client {
     private UUID id;
 
     @Column(name = "last_name")
-    private String LastName;
+    private String lastName;
 
     @Column(name = "first_name")
-    private String FirstName;
+    private String firstName;
 
     @Column(name = "middle_name")
-    private String MiddleName;
+    private String middleName;
 
     @Column(name = "birth_date")
-    private Date BirthDate;
+    private LocalDate birthDate;
 
     @Column(name = "email")
-    private String Email;
+    private String email;
 
     @Column(name="gender")
     @Enumerated(EnumType.STRING)
@@ -60,7 +62,7 @@ public class Client {
     private Employment employment;
 
     @Column(name = "account_number")
-    private String AccountNumber;
+    private String accountNumber;
 
     
 
