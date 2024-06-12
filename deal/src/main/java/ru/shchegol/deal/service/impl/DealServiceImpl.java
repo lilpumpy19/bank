@@ -1,6 +1,7 @@
 package ru.shchegol.deal.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DealServiceImpl implements DealService {
@@ -47,8 +49,10 @@ public class DealServiceImpl implements DealService {
     @Override
     public List<LoanOfferDto> calculateLoanConditions(LoanStatementRequestDto request) {
         Client client = factorySercice.createClient(request);
+        log.info("client save: {}", client);
         clientRepository.save(client);
         Statement statement = factorySercice.createStatement(request, client);
+        log.info("statement save: {}", statement);
         statementRepository.save(statement);
         List<LoanOfferDto> loanOffers = getLoanOffers(request);
         setStatementId(loanOffers, statement.getStatementId());
@@ -91,8 +95,6 @@ public class DealServiceImpl implements DealService {
             creditRepository.save(credit);
             optionalStatement.get().setCreditId(credit);
             statementRepository.save(optionalStatement.get());
-
-
         } else {
             throw new StatementNotFoundException("Failed to get statement with id " + statementId);
         }
@@ -101,8 +103,7 @@ public class DealServiceImpl implements DealService {
 
     private List<LoanOfferDto> getLoanOffers(LoanStatementRequestDto loanStatementRequestDto) {
         HttpEntity<LoanStatementRequestDto> request = new HttpEntity<>(loanStatementRequestDto);
-
-        // Выполните POST-запрос
+        log.info("offers request: {}", loanStatementRequestDto);
         ResponseEntity<List<LoanOfferDto>> response = restTemplate.exchange(
                 BASE_URL + "offers",
                 HttpMethod.POST,
@@ -111,6 +112,7 @@ public class DealServiceImpl implements DealService {
                 }
         );
         if (response.getStatusCode().is2xxSuccessful()) {
+            log.info("offers response: {}", response.getBody());
             return response.getBody();
         } else {
             throw new GetLoanOffersException("Failed to get loan offers");
@@ -127,8 +129,7 @@ public class DealServiceImpl implements DealService {
 
     private CreditDto calculateCredit(ScoringDataDto scoringDataDto) {
         HttpEntity<ScoringDataDto> request = new HttpEntity<>(scoringDataDto);
-
-        // Выполните POST-запрос
+        log.info("calc request: {}", scoringDataDto);
         ResponseEntity<CreditDto> response = restTemplate.exchange(
                 BASE_URL + "calc",
                 HttpMethod.POST,
@@ -137,6 +138,7 @@ public class DealServiceImpl implements DealService {
                 }
         );
         if (response.getStatusCode().is2xxSuccessful()) {
+            log.info("calc response: {}", response.getBody());
             return response.getBody();
         } else {
             throw new CreditCalculationException("Failed to calculate credit");
