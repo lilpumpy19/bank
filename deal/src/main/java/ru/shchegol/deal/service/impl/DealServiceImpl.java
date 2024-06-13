@@ -37,8 +37,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class DealServiceImpl implements DealService {
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
     private final StatementRepository statementRepository;
     private final ClientRepository clientRepository;
     private final CreditRepository creditRepository;
