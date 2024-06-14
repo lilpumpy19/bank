@@ -3,7 +3,7 @@ package ru.shchegol.deal.entity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import ru.shchegol.deal.dto.LoanOfferDto;
-import ru.shchegol.deal.entity.enums.ApplicationStatus;
+import ru.shchegol.dto.enums.ApplicationStatus;
 import ru.shchegol.deal.entity.jsonb.StatusHistory;
 
 import javax.persistence.*;

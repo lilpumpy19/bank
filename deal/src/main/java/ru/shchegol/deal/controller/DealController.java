@@ -10,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.shchegol.deal.dto.FinishRegistrationRequestDto;
+import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.deal.dto.LoanOfferDto;
-import ru.shchegol.deal.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.deal.service.DealService;
 
 import java.util.List;

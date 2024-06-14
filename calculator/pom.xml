@@ -50,6 +50,11 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.7.0</version>
 		</dependency>
+		<dependency>
+			<groupId>ru.shchegol</groupId>
+			<artifactId>dto</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

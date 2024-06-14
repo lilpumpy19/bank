@@ -1,9 +1,9 @@
-package ru.shchegol.calculator.dto;
+package ru.shchegol.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import ru.shchegol.calculator.dto.enums.EmploymentStatus;
-import ru.shchegol.calculator.dto.enums.Position;
+import ru.shchegol.dto.enums.EmploymentStatus;
+import ru.shchegol.dto.enums.Position;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;

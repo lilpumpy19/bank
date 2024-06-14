@@ -2,10 +2,11 @@ package ru.shchegol.deal.entity;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import ru.shchegol.deal.entity.enums.Gender;
-import ru.shchegol.deal.entity.enums.MaritalStatus;
+
 import ru.shchegol.deal.entity.jsonb.Employment;
 import ru.shchegol.deal.entity.jsonb.Passport;
+import ru.shchegol.dto.enums.Gender;
+import ru.shchegol.dto.enums.MaritalStatus;
 
 import javax.persistence.*;
 import java.time.LocalDate;

@@ -1,5 +1,4 @@
 package ru.shchegol.deal.controller;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -7,10 +6,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.shchegol.deal.controller.DealController;
-import ru.shchegol.deal.dto.FinishRegistrationRequestDto;
+import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.deal.dto.LoanOfferDto;
-import ru.shchegol.deal.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.deal.service.DealService;
 
 import java.util.ArrayList;

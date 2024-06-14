@@ -1,9 +1,10 @@
-package ru.shchegol.deal.dto;
+package ru.shchegol.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import ru.shchegol.deal.entity.enums.Gender;
-import ru.shchegol.deal.entity.enums.MaritalStatus;
+import ru.shchegol.dto.enums.Gender;
+import ru.shchegol.dto.enums.MaritalStatus;
+
 
 import java.time.LocalDate;
 @Data

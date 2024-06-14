@@ -1,10 +1,7 @@
-package ru.shchegol.calculator.dto;
+package ru.shchegol.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,7 +26,7 @@ public class CreditDto {
         this.paymentSchedule = new ArrayList<PaymentScheduleElementDto>();
     }
 
-    public void setRate(BigDecimal rate) {
+    public void changeRate(BigDecimal rate) {
         this.rate = this.rate.add(rate);
     }
 

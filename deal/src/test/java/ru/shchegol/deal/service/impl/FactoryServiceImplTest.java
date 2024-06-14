@@ -5,10 +5,15 @@ import ru.shchegol.deal.dto.*;
 import ru.shchegol.deal.entity.Client;
 import ru.shchegol.deal.entity.Credit;
 import ru.shchegol.deal.entity.Statement;
-import ru.shchegol.deal.entity.enums.*;
-import ru.shchegol.deal.entity.jsonb.Employment;
+import ru.shchegol.dto.enums.*;
 import ru.shchegol.deal.entity.jsonb.Passport;
 import ru.shchegol.deal.entity.jsonb.StatusHistory;
+import ru.shchegol.dto.EmploymentDto;
+import ru.shchegol.dto.FinishRegistrationRequestDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.ScoringDataDto;
+import ru.shchegol.dto.enums.*;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

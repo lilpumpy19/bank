@@ -2,7 +2,7 @@ package ru.shchegol.deal.entity.jsonb;
 
 
 import lombok.*;
-import ru.shchegol.deal.entity.enums.ChangeType;
+import ru.shchegol.dto.enums.ChangeType;
 
 
 import javax.persistence.Embeddable;

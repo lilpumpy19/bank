@@ -2,8 +2,9 @@ package ru.shchegol.deal.entity.jsonb;
 
 
 import lombok.*;
-import ru.shchegol.deal.entity.enums.EmploymentStatus;
-import ru.shchegol.deal.entity.enums.Position;
+import ru.shchegol.dto.enums.EmploymentStatus;
+import ru.shchegol.dto.enums.Position;
+
 
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;

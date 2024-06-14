@@ -1,14 +1,14 @@
-package ru.shchegol.calculator.dto;
+package ru.shchegol.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+
+@Getter
+@Setter
 @AllArgsConstructor
-@Data
 @NoArgsConstructor
 public class PaymentScheduleElementDto {
     private Integer number;

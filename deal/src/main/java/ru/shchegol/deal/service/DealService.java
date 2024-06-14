@@ -1,8 +1,8 @@
 package ru.shchegol.deal.service;
 
-import ru.shchegol.deal.dto.FinishRegistrationRequestDto;
+import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.deal.dto.LoanOfferDto;
-import ru.shchegol.deal.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
 
 import java.util.List;
 

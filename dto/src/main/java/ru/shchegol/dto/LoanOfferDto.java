@@ -1,4 +1,4 @@
-package ru.shchegol.calculator.dto;
+package ru.shchegol.dto;
 
 import lombok.Data;
 

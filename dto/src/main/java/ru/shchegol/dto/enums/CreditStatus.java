@@ -1,4 +1,4 @@
-package ru.shchegol.deal.entity.enums;
+package ru.shchegol.dto.enums;
 
 public enum CreditStatus {
     CALCULATED,

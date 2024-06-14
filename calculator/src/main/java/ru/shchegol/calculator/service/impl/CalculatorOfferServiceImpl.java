@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.shchegol.calculator.dto.LoanOfferDto;
-import ru.shchegol.calculator.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.LoanOfferDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.calculator.service.CalculateService;
 import ru.shchegol.calculator.service.CalculatorOfferService;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

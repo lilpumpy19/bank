@@ -1,4 +1,4 @@
-package ru.shchegol.calculator.anno;
+package ru.shchegol.dto.anno;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

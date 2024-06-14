@@ -1,8 +1,8 @@
-package ru.shchegol.calculator.dto;
+package ru.shchegol.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import ru.shchegol.calculator.anno.MinAge;
+import ru.shchegol.dto.anno.MinAge;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;

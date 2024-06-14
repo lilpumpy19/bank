@@ -1,12 +1,12 @@
 package ru.shchegol.deal.service;
 
-import ru.shchegol.deal.dto.CreditDto;
-import ru.shchegol.deal.dto.FinishRegistrationRequestDto;
-import ru.shchegol.deal.dto.LoanStatementRequestDto;
-import ru.shchegol.deal.dto.ScoringDataDto;
+import ru.shchegol.dto.FinishRegistrationRequestDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.ScoringDataDto;
 import ru.shchegol.deal.entity.Client;
 import ru.shchegol.deal.entity.Credit;
 import ru.shchegol.deal.entity.Statement;
+import ru.shchegol.deal.dto.CreditDto;
 
 public interface FactorySercice {
     Client createClient(LoanStatementRequestDto request);

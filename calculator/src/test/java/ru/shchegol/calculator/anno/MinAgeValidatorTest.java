@@ -2,7 +2,7 @@ package ru.shchegol.calculator.anno;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.shchegol.calculator.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

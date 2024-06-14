@@ -2,7 +2,6 @@ package ru.shchegol.deal.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -14,8 +13,11 @@ import ru.shchegol.deal.dto.*;
 import ru.shchegol.deal.entity.Client;
 import ru.shchegol.deal.entity.Credit;
 import ru.shchegol.deal.entity.Statement;
-import ru.shchegol.deal.entity.enums.ApplicationStatus;
-import ru.shchegol.deal.entity.enums.ChangeType;
+import ru.shchegol.dto.FinishRegistrationRequestDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.ScoringDataDto;
+import ru.shchegol.dto.enums.ApplicationStatus;
+import ru.shchegol.dto.enums.ChangeType;
 
 import ru.shchegol.deal.entity.jsonb.StatusHistory;
 import ru.shchegol.deal.exception.CreditCalculationException;
@@ -26,8 +28,8 @@ import ru.shchegol.deal.repository.CreditRepository;
 import ru.shchegol.deal.repository.StatementRepository;
 import ru.shchegol.deal.service.DealService;
 import ru.shchegol.deal.service.FactorySercice;
+import ru.shchegol.deal.dto.CreditDto;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;

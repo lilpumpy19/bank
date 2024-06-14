@@ -5,13 +5,17 @@ import ru.shchegol.deal.dto.*;
 import ru.shchegol.deal.entity.Client;
 import ru.shchegol.deal.entity.Credit;
 import ru.shchegol.deal.entity.Statement;
-import ru.shchegol.deal.entity.enums.ApplicationStatus;
-import ru.shchegol.deal.entity.enums.ChangeType;
-import ru.shchegol.deal.entity.enums.CreditStatus;
+import ru.shchegol.dto.FinishRegistrationRequestDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.ScoringDataDto;
+import ru.shchegol.dto.enums.ApplicationStatus;
+import ru.shchegol.dto.enums.ChangeType;
+import ru.shchegol.dto.enums.CreditStatus;
 import ru.shchegol.deal.entity.jsonb.Employment;
 import ru.shchegol.deal.entity.jsonb.Passport;
 import ru.shchegol.deal.entity.jsonb.StatusHistory;
 import ru.shchegol.deal.service.FactorySercice;
+import ru.shchegol.deal.dto.CreditDto;
 
 import java.sql.Timestamp;
 

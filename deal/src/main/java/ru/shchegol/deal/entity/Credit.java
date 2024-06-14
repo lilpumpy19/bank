@@ -3,7 +3,7 @@ package ru.shchegol.deal.entity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import ru.shchegol.deal.dto.PaymentScheduleElementDto;
-import ru.shchegol.deal.entity.enums.CreditStatus;
+import ru.shchegol.dto.enums.CreditStatus;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

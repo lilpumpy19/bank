@@ -1,4 +1,4 @@
-package ru.shchegol.calculator.dto.enums;
+package ru.shchegol.dto.enums;
 
 public enum EmploymentStatus {
     UNEMPLOYED,

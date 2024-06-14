@@ -1,10 +1,10 @@
-package ru.shchegol.deal.dto;
+package ru.shchegol.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import ru.shchegol.deal.entity.enums.Gender;
-import ru.shchegol.deal.entity.enums.MaritalStatus;
-
+import ru.shchegol.dto.anno.MinAge;
+import ru.shchegol.dto.enums.Gender;
+import ru.shchegol.dto.enums.MaritalStatus;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -44,7 +44,7 @@ public class ScoringDataDto {
     @Schema(description = "Gender of the client", example = "MALE")
     private Gender gender;
 
-
+    @MinAge(value = 18)
     @Schema(description = "Birthdate of the client", example = "1990-01-01")
     private LocalDate birthdate;
 
