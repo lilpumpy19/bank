@@ -1,8 +1,10 @@
 package ru.shchegol.deal.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,51 +34,10 @@ public class DealController {
             description = "Client and Statement are created and a list of credits is returned")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    content = @Content(mediaType = "application/json",examples = @ExampleObject(
-                            """
-                                    [
-                                        {
-                                            "statementId": "98f746a5-c5cb-4176-86e4-62cd104c7bb8",
-                                            "requestedAmount": 50000,
-                                            "totalAmount": 63727.44,
-                                            "term": 12,
-                                            "monthlyPayment": 5310.62,
-                                            "rate": 11.0,
-                                            "isInsuranceEnabled": true,
-                                            "isSalaryClient": true
-                                        },
-                                        {
-                                            "statementId": "98f746a5-c5cb-4176-86e4-62cd104c7bb8",
-                                            "requestedAmount": 50000,
-                                            "totalAmount": 63892.92,
-                                            "term": 12,
-                                            "monthlyPayment": 5324.41,
-                                            "rate": 12.0,
-                                            "isInsuranceEnabled": true,
-                                            "isSalaryClient": false
-                                        },
-                                        {
-                                            "statementId": "98f746a5-c5cb-4176-86e4-62cd104c7bb8",
-                                            "requestedAmount": 50000,
-                                            "totalAmount": 53820.00,
-                                            "term": 12,
-                                            "monthlyPayment": 4485.00,
-                                            "rate": 14.0,
-                                            "isInsuranceEnabled": false,
-                                            "isSalaryClient": true
-                                        },
-                                        {
-                                            "statementId": "98f746a5-c5cb-4176-86e4-62cd104c7bb8",
-                                            "requestedAmount": 50000,
-                                            "totalAmount": 54083.88,
-                                            "term": 12,
-                                            "monthlyPayment": 4506.99,
-                                            "rate": 15,
-                                            "isInsuranceEnabled": false,
-                                            "isSalaryClient": false
-                                        }
-                                    ]
-                                    """
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = LoanOfferDto.class),
+                                    minItems = 4,
+                                    maxItems = 4
                     ))
             ),
     })
