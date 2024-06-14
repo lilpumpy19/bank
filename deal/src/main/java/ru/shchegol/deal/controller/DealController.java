@@ -15,6 +15,7 @@ import ru.shchegol.deal.dto.LoanOfferDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.deal.service.DealService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Tag(name = "Deal")
@@ -79,7 +80,8 @@ public class DealController {
                     ))
             ),
     })
-    public ResponseEntity<List<LoanOfferDto>> calculateLoanConditions(@RequestBody LoanStatementRequestDto request) {
+    public ResponseEntity<List<LoanOfferDto>> calculateLoanConditions
+            (@RequestBody @Valid LoanStatementRequestDto request) {
         log.info("calculateLoanConditions: {}", request);
         List<LoanOfferDto> loanOffers = dealService.calculateLoanConditions(request);
         log.info("loanOffers: {}", loanOffers);
@@ -93,7 +95,7 @@ public class DealController {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400",description = "Failed to get statement")
     })
-    public ResponseEntity<Void> selectLoanOffer(@RequestBody LoanOfferDto offer) {
+    public ResponseEntity<Void> selectLoanOffer(@RequestBody @Valid LoanOfferDto offer) {
         log.info("selectLoanOffer: {}", offer);
         dealService.selectLoanOffer(offer);
         log.info("selectLoanOffer: success");
@@ -108,7 +110,8 @@ public class DealController {
             @ApiResponse(responseCode = "400",description = "Failed to get statement with id {statementId}")
     })
     public ResponseEntity<Void> finishRegistrationAndCalculate(@PathVariable String statementId,
-                                                               @RequestBody FinishRegistrationRequestDto request) {
+                                                               @RequestBody @Valid
+                                                               FinishRegistrationRequestDto request) {
         log.info("finishRegistrationAndCalculate: statementId={}, request={}", statementId, request);
         dealService.finishRegistrationAndCalculate(statementId, request);
         log.info("finishRegistrationAndCalculate: success");
