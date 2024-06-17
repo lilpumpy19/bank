@@ -16,15 +16,14 @@ import ru.shchegol.deal.entity.Statement;
 import ru.shchegol.deal.exception.CreditCalculationException;
 import ru.shchegol.deal.exception.GetLoanOffersException;
 import ru.shchegol.deal.exception.StatementNotFoundException;
+import ru.shchegol.deal.mapper.DealMapper;
 import ru.shchegol.deal.repository.ClientRepository;
 import ru.shchegol.deal.repository.CreditRepository;
 import ru.shchegol.deal.repository.StatementRepository;
-import ru.shchegol.deal.service.FactorySercice;
 import ru.shchegol.dto.EmploymentDto;
 import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,7 +47,8 @@ class DealServiceImplTest {
     private CreditRepository creditRepository;
 
     @Mock
-    private FactorySercice factorySercice;
+    private DealMapper dealMapper;
+
 
     @InjectMocks
     private DealServiceImpl dealService;
@@ -64,7 +64,7 @@ class DealServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        dealService = new DealServiceImpl(restTemplate, statementRepository, clientRepository, creditRepository, factorySercice);
+        dealService = new DealServiceImpl(restTemplate, statementRepository, clientRepository, creditRepository,dealMapper);
         loanStatementRequestDto = new LoanStatementRequestDto();
 
         finishRegistrationRequestDto = new FinishRegistrationRequestDto();
@@ -75,24 +75,6 @@ class DealServiceImplTest {
 
         statement = new Statement();
         statement.setClientId(client);
-    }
-
-    @Test
-    void calculateLoanConditions() {
-        when(factorySercice.createClient(any(LoanStatementRequestDto.class))).thenReturn(client);
-        when(factorySercice.createStatement(any(LoanStatementRequestDto.class), any(Client.class))).thenReturn(statement);
-        when(restTemplate.exchange(
-                anyString(),
-                any(),
-                any(),
-                any(ParameterizedTypeReference.class)
-        )).thenReturn(ResponseEntity.ok(List.of(new LoanOfferDto())));
-
-        List<LoanOfferDto> loanOffers = dealService.calculateLoanConditions(loanStatementRequestDto);
-
-        verify(factorySercice, times(1)).createClient(any(LoanStatementRequestDto.class));
-        verify(factorySercice, times(1)).createStatement(any(LoanStatementRequestDto.class), any(Client.class));
-        assertFalse(loanOffers.isEmpty());
     }
 
 

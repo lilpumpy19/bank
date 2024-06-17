@@ -1,11 +1,14 @@
-package ru.shchegol.deal.service.impl;
+package ru.shchegol.deal.mapper;
 
 import org.junit.jupiter.api.Test;
-import ru.shchegol.deal.dto.*;
+import org.mapstruct.factory.Mappers;
+import ru.shchegol.deal.dto.CreditDto;
+
+import ru.shchegol.deal.dto.LoanOfferDto;
 import ru.shchegol.deal.entity.Client;
 import ru.shchegol.deal.entity.Credit;
 import ru.shchegol.deal.entity.Statement;
-import ru.shchegol.dto.enums.*;
+import ru.shchegol.deal.entity.jsonb.Employment;
 import ru.shchegol.deal.entity.jsonb.Passport;
 import ru.shchegol.deal.entity.jsonb.StatusHistory;
 import ru.shchegol.dto.EmploymentDto;
@@ -14,20 +17,24 @@ import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.dto.ScoringDataDto;
 import ru.shchegol.dto.enums.*;
 
-
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-class FactoryServiceImplTest {
+class DealMapperTest {
 
-    private final FactoryServiceImpl factoryService = new FactoryServiceImpl();
+    private final DealMapper dealMapper = Mappers.getMapper(DealMapper.class);
 
     @Test
-    void createClient() {
+    void LoanStatementToClient() {
+
         LoanStatementRequestDto request = new LoanStatementRequestDto();
         request.setFirstName("John");
         request.setLastName("Doe");
@@ -37,7 +44,7 @@ class FactoryServiceImplTest {
         request.setPassportSeries("1234");
         request.setPassportNumber("567890");
 
-        Client client = factoryService.createClient(request);
+        Client client = dealMapper.toClient(request);
 
         assertEquals("John", client.getFirstName());
         assertEquals("Doe", client.getLastName());
@@ -47,14 +54,15 @@ class FactoryServiceImplTest {
         assertEquals("1234", client.getPassport().getSeries());
         assertEquals("567890", client.getPassport().getNumber());
         assertNotNull(client.getEmployment());
+
     }
 
     @Test
-    void createStatement() {
+    void toStatement() {
         LoanStatementRequestDto request = new LoanStatementRequestDto();
         Client client = new Client();
 
-        Statement statement = factoryService.createStatement(request, client);
+        Statement statement = dealMapper.toStatement(request, client);
 
         assertEquals(client, statement.getClientId());
         assertNotNull(statement.getCreationDate());
@@ -68,7 +76,8 @@ class FactoryServiceImplTest {
     }
 
     @Test
-    void createScoringData() {
+    void toScoringDataDto() {
+
         LoanOfferDto loanOfferDto = mock(LoanOfferDto.class);
         when(loanOfferDto.getRequestedAmount()).thenReturn(new BigDecimal("100000"));
         when(loanOfferDto.getTerm()).thenReturn(12);
@@ -94,7 +103,7 @@ class FactoryServiceImplTest {
 
 
 
-        ScoringDataDto scoringDataDto = factoryService.createScoringData(finishRegistrationRequestDto, statement);
+        ScoringDataDto scoringDataDto = dealMapper.toScoringDataDto(finishRegistrationRequestDto, statement);
 
 
         assertEquals(new BigDecimal("100000"), scoringDataDto.getAmount());
@@ -110,7 +119,7 @@ class FactoryServiceImplTest {
     }
 
     @Test
-    void createCredit() {
+    void toCredit() {
         CreditDto creditDto = new CreditDto();
         creditDto.setAmount(new BigDecimal("100000"));
         creditDto.setTerm(12);
@@ -121,7 +130,7 @@ class FactoryServiceImplTest {
         creditDto.setIsInsuranceEnabled(true);
         creditDto.setIsSalaryClient(false);
 
-        Credit credit = factoryService.createCredit(creditDto);
+        Credit credit = dealMapper.toCredit(creditDto);
 
         assertEquals(new BigDecimal("100000"), credit.getAmount());
         assertEquals(12, credit.getTerm());

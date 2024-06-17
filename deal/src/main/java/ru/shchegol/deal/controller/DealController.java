@@ -3,13 +3,12 @@ package ru.shchegol.deal.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.shchegol.dto.FinishRegistrationRequestDto;
@@ -24,10 +23,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/deal")
+@RequiredArgsConstructor
 public class DealController {
 
-    @Autowired
-    private DealService dealService;
+
+    private final DealService dealService;
 
     @PostMapping("/statement")
     @Operation(summary = "Calculate loan conditions",

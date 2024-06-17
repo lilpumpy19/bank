@@ -13,6 +13,7 @@ import ru.shchegol.deal.dto.*;
 import ru.shchegol.deal.entity.Client;
 import ru.shchegol.deal.entity.Credit;
 import ru.shchegol.deal.entity.Statement;
+import ru.shchegol.deal.mapper.DealMapper;
 import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.dto.ScoringDataDto;
@@ -27,7 +28,6 @@ import ru.shchegol.deal.repository.ClientRepository;
 import ru.shchegol.deal.repository.CreditRepository;
 import ru.shchegol.deal.repository.StatementRepository;
 import ru.shchegol.deal.service.DealService;
-import ru.shchegol.deal.service.FactorySercice;
 import ru.shchegol.deal.dto.CreditDto;
 
 import java.sql.Timestamp;
@@ -43,16 +43,17 @@ public class DealServiceImpl implements DealService {
     private final StatementRepository statementRepository;
     private final ClientRepository clientRepository;
     private final CreditRepository creditRepository;
-    private final FactorySercice factorySercice;
+    private final DealMapper dealMapper;
+
     @Value("${app.base-url}")
     private String BASE_URL;
 
     @Override
     public List<LoanOfferDto> calculateLoanConditions(LoanStatementRequestDto request) {
-        Client client = factorySercice.createClient(request);
+        Client client = dealMapper.toClient(request);
         log.info("client save: {}", client);
         clientRepository.save(client);
-        Statement statement = factorySercice.createStatement(request, client);
+        Statement statement =dealMapper.toStatement(request,client);
         log.info("statement save: {}", statement);
         statementRepository.save(statement);
         List<LoanOfferDto> loanOffers = getLoanOffers(request);
@@ -84,9 +85,9 @@ public class DealServiceImpl implements DealService {
 
         Optional<Statement> optionalStatement = statementRepository.findById(UUID.fromString(statementId));
         if (optionalStatement.isPresent()) {
-            ScoringDataDto scoringDataDto = factorySercice.createScoringData(request, optionalStatement.get());
+            ScoringDataDto scoringDataDto = dealMapper.toScoringDataDto(request,optionalStatement.get());
             CreditDto creditDto = calculateCredit(scoringDataDto);
-            Credit credit = factorySercice.createCredit(creditDto);
+            Credit credit = dealMapper.toCredit(creditDto);
 
             optionalStatement.get().setStatus(ApplicationStatus.APPROVED);
             optionalStatement.get().addStatusHistory(
