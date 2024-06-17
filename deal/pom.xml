@@ -16,6 +16,8 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -73,6 +75,7 @@
 			<groupId>ru.shchegol</groupId>
 			<artifactId>dto</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<classifier>qa</classifier>
 		</dependency>
 
 	</dependencies>

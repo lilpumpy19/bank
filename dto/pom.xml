@@ -11,6 +11,7 @@
 	<groupId>ru.shchegol</groupId>
 	<artifactId>dto</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
 	<name>dto</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -45,6 +46,21 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classifier>qa</classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
