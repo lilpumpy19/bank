@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/deal
+    username: postgres
+    password: 0990
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show_sql: true
+  main:
+    web-application-type: servlet
+  liquibase:
+    change-log: classpath:liquibase/changelog.yaml
+    enabled: true
+
+server:
+  port: 8081
+
+app:
+  base-url: http://localhost:8080/calculator/

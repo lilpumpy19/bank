@@ -12,13 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import ru.shchegol.calculator.dto.*;
-import ru.shchegol.calculator.dto.enums.EmploymentStatus;
-import ru.shchegol.calculator.dto.enums.Gender;
-import ru.shchegol.calculator.dto.enums.MaritalStatus;
-import ru.shchegol.calculator.dto.enums.Position;
+import ru.shchegol.dto.enums.EmploymentStatus;
+import ru.shchegol.dto.enums.Gender;
+import ru.shchegol.dto.enums.MaritalStatus;
+import ru.shchegol.dto.enums.Position;
 import ru.shchegol.calculator.service.CalculatorCreditService;
 import ru.shchegol.calculator.service.CalculatorOfferService;
+import ru.shchegol.dto.*;
 
 
 import java.math.BigDecimal;

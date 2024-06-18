@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.shchegol.calculator.dto.CreditDto;
-import ru.shchegol.calculator.dto.EmploymentDto;
-import ru.shchegol.calculator.dto.PaymentScheduleElementDto;
-import ru.shchegol.calculator.dto.ScoringDataDto;
-import ru.shchegol.calculator.dto.enums.Gender;
-import ru.shchegol.calculator.dto.enums.MaritalStatus;
+import ru.shchegol.dto.CreditDto;
+import ru.shchegol.dto.EmploymentDto;
+import ru.shchegol.dto.PaymentScheduleElementDto;
+import ru.shchegol.dto.ScoringDataDto;
+import ru.shchegol.dto.enums.Gender;
+import ru.shchegol.dto.enums.MaritalStatus;
 import ru.shchegol.calculator.exception.CreditRefusalException;
 import ru.shchegol.calculator.service.CalculateService;
 import ru.shchegol.calculator.service.CalculatorCreditService;
@@ -120,21 +120,21 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
 
     private void checkIsSalaryClient(ScoringDataDto scoringData) {
         if (scoringData.getIsSalaryClient()) {
-            credit.setRate(SALARY_CLIENT_DISCOUNT.negate());
+            credit.changeRate(SALARY_CLIENT_DISCOUNT.negate());
         }
     }
 
     private void checkInsurance(ScoringDataDto scoringData) {
         if (scoringData.getIsInsuranceEnabled()) {
-            credit.setRate(INSURANCE_DISCOUNT.negate());
+            credit.changeRate(INSURANCE_DISCOUNT.negate());
         }
     }
 
     private void checkMaritalStatus(ScoringDataDto scoringData) {
         MaritalStatus maritalStatus = scoringData.getMaritalStatus();
         switch (maritalStatus) {
-            case SINGLE -> credit.setRate(BigDecimal.valueOf(1));
-            case MARRIED -> credit.setRate(BigDecimal.valueOf(-3));
+            case SINGLE -> credit.changeRate(BigDecimal.valueOf(1));
+            case MARRIED -> credit.changeRate(BigDecimal.valueOf(-3));
         }
     }
 
@@ -143,13 +143,13 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
 
         switch (employment.getEmploymentStatus()) {
             case UNEMPLOYED -> throw new CreditRefusalException("Refusal due to unemployed");
-            case SELF_EMPLOYED -> credit.setRate(BigDecimal.valueOf(1));
-            case BUSINESS_OWNER -> credit.setRate(BigDecimal.valueOf(2));
+            case SELF_EMPLOYED -> credit.changeRate(BigDecimal.valueOf(1));
+            case BUSINESS_OWNER -> credit.changeRate(BigDecimal.valueOf(2));
         }
 
         switch (employment.getPosition()) {
-            case MANAGER -> credit.setRate(BigDecimal.valueOf(-2));
-            case TOP_MANAGER -> credit.setRate(BigDecimal.valueOf(-3));
+            case MANAGER -> credit.changeRate(BigDecimal.valueOf(-2));
+            case TOP_MANAGER -> credit.changeRate(BigDecimal.valueOf(-3));
         }
     }
 
@@ -164,11 +164,11 @@ public class CalculatorCreditServiceImpl implements CalculatorCreditService {
         int age = LocalDate.now().getYear() - scoringData.getBirthdate().getYear();
         Gender gender = scoringData.getGender();
         if (age > 32 && age < 60 && gender == Gender.FEMALE) {
-            credit.setRate(BigDecimal.valueOf(-3));
+            credit.changeRate(BigDecimal.valueOf(-3));
         } else if (age > 30 && age < 55 && gender == Gender.MALE) {
-            credit.setRate(BigDecimal.valueOf(-3));
+            credit.changeRate(BigDecimal.valueOf(-3));
         } else if (gender == Gender.NON_BINARY) {
-            credit.setRate(BigDecimal.valueOf(7));
+            credit.changeRate(BigDecimal.valueOf(7));
         }
     }
 }

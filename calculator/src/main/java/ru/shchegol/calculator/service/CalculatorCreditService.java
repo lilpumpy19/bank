@@ -1,8 +1,8 @@
 package ru.shchegol.calculator.service;
 
 import org.springframework.http.ResponseEntity;
-import ru.shchegol.calculator.dto.CreditDto;
-import ru.shchegol.calculator.dto.ScoringDataDto;
+import ru.shchegol.dto.CreditDto;
+import ru.shchegol.dto.ScoringDataDto;
 
 public interface CalculatorCreditService {
 

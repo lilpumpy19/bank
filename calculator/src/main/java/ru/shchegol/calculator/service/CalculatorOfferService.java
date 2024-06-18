@@ -1,8 +1,8 @@
 package ru.shchegol.calculator.service;
 
 import org.springframework.http.ResponseEntity;
-import ru.shchegol.calculator.dto.LoanOfferDto;
-import ru.shchegol.calculator.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.LoanOfferDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
 
 import java.util.List;
 

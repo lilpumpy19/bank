@@ -8,8 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
-import ru.shchegol.calculator.dto.LoanOfferDto;
-import ru.shchegol.calculator.dto.LoanStatementRequestDto;
+import ru.shchegol.dto.LoanOfferDto;
+import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.calculator.service.CalculateService;
 
 import java.math.BigDecimal;
