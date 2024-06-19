@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -22,6 +23,7 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
+            log.error("Validation error in field '{}': {}", fieldName, errorMessage);
             errors.put(fieldName, errorMessage);
         });
         return errors;
@@ -29,12 +31,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GetLoanOffersException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleGetLoanOffersException(GetLoanOffersException ex) {
+        log.error(ex.getMessage());
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     @ExceptionHandler(SelectOfferException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleSelectOfferException(SelectOfferException ex) {
+        log.error(ex.getMessage());
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 

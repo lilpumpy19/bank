@@ -1,6 +1,7 @@
 package ru.shchegol.statement.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class StatementServiceImpl implements StatementService {
     private final RestTemplate restTemplate;
 
@@ -26,6 +28,7 @@ public class StatementServiceImpl implements StatementService {
 
     @Override
     public List<LoanOfferDto> getLoanOffers(LoanStatementRequestDto loanStatement) {
+        log.info("Request to GetLoanOffers: {}", loanStatement);
         HttpEntity<LoanStatementRequestDto> request = new HttpEntity<>(loanStatement);
         ResponseEntity<List<LoanOfferDto>> response = restTemplate.exchange(
                 BASE_URL + "statement",
@@ -35,6 +38,7 @@ public class StatementServiceImpl implements StatementService {
                 }
         );
         if (response.getStatusCode().is2xxSuccessful()) {
+            log.info("Response from GetLoanOffers: {}", response.getBody());
             return response.getBody();
         }else {
             throw new GetLoanOffersException("Failed to get loan offers");
@@ -43,6 +47,7 @@ public class StatementServiceImpl implements StatementService {
 
     @Override
     public void selectOffer(LoanOfferDto loanOffer) {
+        log.info("Request to SelectOffer: {}", loanOffer);
         HttpEntity<LoanOfferDto> request = new HttpEntity<>(loanOffer);
         ResponseEntity<Void> response = restTemplate.exchange(
                 BASE_URL + "offer/select",
@@ -53,5 +58,6 @@ public class StatementServiceImpl implements StatementService {
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new SelectOfferException("Failed to select loan offer");
         }
+        log.info("Response from SelectOffer: Successful");
     }
 }
