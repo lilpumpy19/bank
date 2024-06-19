@@ -8,4 +8,6 @@ import java.util.List;
 public interface StatementService {
 
     List<LoanOfferDto> getLoanOffers(LoanStatementRequestDto loanStatement);
+
+    void selectOffer(LoanOfferDto loanOffer);
 }

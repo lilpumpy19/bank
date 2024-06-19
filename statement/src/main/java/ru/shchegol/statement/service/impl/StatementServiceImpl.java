@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import ru.shchegol.dto.LoanOfferDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.statement.exception.GetLoanOffersException;
+import ru.shchegol.statement.exception.SelectOfferException;
 import ru.shchegol.statement.service.StatementService;
 
 import java.util.List;
@@ -37,6 +38,20 @@ public class StatementServiceImpl implements StatementService {
             return response.getBody();
         }else {
             throw new GetLoanOffersException("Failed to get loan offers");
+        }
+    }
+
+    @Override
+    public void selectOffer(LoanOfferDto loanOffer) {
+        HttpEntity<LoanOfferDto> request = new HttpEntity<>(loanOffer);
+        ResponseEntity<Void> response = restTemplate.exchange(
+                BASE_URL + "offer/select",
+                HttpMethod.POST,
+                request,
+                Void.class
+        );
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new SelectOfferException("Failed to select loan offer");
         }
     }
 }

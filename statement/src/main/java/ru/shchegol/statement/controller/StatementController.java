@@ -24,5 +24,11 @@ public class StatementController {
         return ResponseEntity.ok(statementService.getLoanOffers(loanStatement));
     }
 
+    @PostMapping("/offer")
+    private ResponseEntity<Void> selectOffer(@RequestBody LoanOfferDto loanOffer) {
+        statementService.selectOffer(loanOffer);
+        return ResponseEntity.ok().build();
+    }
+
 
 }
