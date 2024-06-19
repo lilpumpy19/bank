@@ -2,4 +2,4 @@ server:
   port: 8082
 
 app:
-  base-url: http://localhost:8080/calculator/
+  base-url: http://localhost:8081/deal/
