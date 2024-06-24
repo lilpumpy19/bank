@@ -5,7 +5,7 @@ spring:
     password: 0990
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
@@ -13,7 +13,7 @@ spring:
   main:
     web-application-type: servlet
   liquibase:
-    change-log: classpath:liquibase/changelog.yaml
+    change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
 
 server:
