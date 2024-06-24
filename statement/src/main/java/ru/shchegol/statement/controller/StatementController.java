@@ -46,7 +46,7 @@ public class StatementController {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400",description = "Failed to select loan offer")
     })
-    private ResponseEntity<Void> selectOffer(@RequestBody LoanOfferDto loanOffer) {
+    public ResponseEntity<Void> selectOffer(@RequestBody LoanOfferDto loanOffer) {
         statementService.selectOffer(loanOffer);
         return ResponseEntity.ok().build();
     }
