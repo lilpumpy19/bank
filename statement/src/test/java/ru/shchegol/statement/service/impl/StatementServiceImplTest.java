@@ -6,12 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 import ru.shchegol.dto.LoanOfferDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.statement.exception.GetLoanOffersException;
+import ru.shchegol.statement.feignclient.BankFeignClient;
 
 import java.util.Arrays;
 
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class StatementServiceImplTest {
     @Mock
-    RestTemplate restTemplate;
+    BankFeignClient feignClient;
     @InjectMocks
     StatementServiceImpl statementService;
     @Mock
@@ -33,33 +32,21 @@ class StatementServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        statementService = new StatementServiceImpl(restTemplate);
+        statementService = new StatementServiceImpl(feignClient);
         loanOfferDto = new LoanOfferDto();
 
     }
 
     @Test
     void getLoanOffers_failure() {
-        when(restTemplate.exchange(
-                anyString(),
-                any(),
-                any(),
-                any(ParameterizedTypeReference.class)
-        )).thenReturn(ResponseEntity.badRequest().body(null));
-
-
+        when(feignClient.getLoanOffers(any())).thenReturn(ResponseEntity.badRequest().body(null));
         assertThrows(GetLoanOffersException.class, () -> statementService.getLoanOffers(new LoanStatementRequestDto()));
     }
 
     @Test
     void getLoanOffers_success() {
-        when(restTemplate.exchange(
-                anyString(),
-                any(),
-                any(),
-                any(ParameterizedTypeReference.class)
-        )).thenReturn(ResponseEntity.ok(Arrays.asList(loanOfferDto, loanOfferDto, loanOfferDto, loanOfferDto)));
-
+        when(feignClient.getLoanOffers(any())).
+                thenReturn(ResponseEntity.ok(Arrays.asList(loanOfferDto, loanOfferDto, loanOfferDto, loanOfferDto)));
         assertDoesNotThrow(() -> statementService.getLoanOffers(new LoanStatementRequestDto()));
     }
 
