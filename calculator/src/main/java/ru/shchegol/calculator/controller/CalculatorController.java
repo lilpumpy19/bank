@@ -62,7 +62,7 @@ public class CalculatorController {
                                     maxItems = 4
                             )))
     })
-    public ResponseEntity<List<LoanOfferDto>> offers(@Valid @RequestBody LoanStatementRequestDto loanStatement) {
+    public ResponseEntity<List<LoanOfferDto>> offers(@RequestBody LoanStatementRequestDto loanStatement) {
         log.info("Request: {}", loanStatement);
         ResponseEntity<List<LoanOfferDto>> response = calculatorService.calcLoanOffers(loanStatement);
         log.info("Response: {}", response);
