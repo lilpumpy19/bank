@@ -10,6 +10,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="statement" />
+        <module name="dossier" />
         <module name="calculator" />
         <module name="deal" />
         <module name="dto" />
@@ -20,6 +21,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="calculator" options="-parameters" />
       <module name="deal" options="-parameters" />
+      <module name="dossier" options="-parameters" />
       <module name="dto" options="-parameters" />
       <module name="statement" options="-parameters" />
     </option>
