@@ -42,6 +42,13 @@
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>ru.shchegol</groupId>
+			<artifactId>dto</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<classifier>qa</classifier>
+		</dependency>
 	</dependencies>
 
 	<build>

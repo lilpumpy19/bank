@@ -7,6 +7,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.shchegol.deal.dto.*;
@@ -14,6 +15,7 @@ import ru.shchegol.deal.entity.Client;
 import ru.shchegol.deal.entity.Credit;
 import ru.shchegol.deal.entity.Statement;
 import ru.shchegol.deal.mapper.DealMapper;
+import ru.shchegol.dto.EmailMassageDto;
 import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.dto.ScoringDataDto;
@@ -29,6 +31,7 @@ import ru.shchegol.deal.repository.CreditRepository;
 import ru.shchegol.deal.repository.StatementRepository;
 import ru.shchegol.deal.service.DealService;
 import ru.shchegol.deal.dto.CreditDto;
+import ru.shchegol.dto.enums.Theme;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -44,6 +47,7 @@ public class DealServiceImpl implements DealService {
     private final ClientRepository clientRepository;
     private final CreditRepository creditRepository;
     private final DealMapper dealMapper;
+    private final KafkaTemplate<String, EmailMassageDto> kafkaTemplate;
 
     @Value("${app.base-url}")
     private String BASE_URL;
@@ -64,6 +68,8 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public void selectLoanOffer(LoanOfferDto offer) {
+        kafkaTemplate.send("finish-registration",
+                new EmailMassageDto("a@gmail.com", Theme.OFFER,1L));
         Optional<Statement> optionalStatement = statementRepository.findById(offer.getStatementId());
 
         if (optionalStatement.isPresent()) {
