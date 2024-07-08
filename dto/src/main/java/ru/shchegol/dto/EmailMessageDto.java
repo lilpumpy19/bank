@@ -6,14 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import ru.shchegol.dto.enums.Theme;
 
-import java.util.UUID;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class EmailMassageDto {
+public class EmailMessageDto {
     private String address;
     private Theme theme;
-    private Long statementId;
+    private String statementId;
 }

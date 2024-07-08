@@ -14,4 +14,44 @@ public class KafkaTopic {
                 .partitions(1)
                 .build();
     }
+
+    @Bean
+    public NewTopic createDocuments() {
+        return TopicBuilder.name("create-documents")
+                .partitions(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic sendDocuments() {
+        return TopicBuilder.name("send-documents")
+                .partitions(1)
+                .build();
+    }
+
+
+    @Bean
+    public NewTopic sendSes() {
+        return TopicBuilder.name("send-ses")
+                .partitions(1)
+                .build();
+    }
+
+
+    @Bean
+    public NewTopic creditIssued() {
+        return TopicBuilder.name("credit-issued")
+                .partitions(1)
+                .build();
+    }
+
+
+    @Bean
+    public NewTopic statementDenied() {
+        return TopicBuilder.name("statement-denied")
+                .partitions(1)
+                .build();
+    }
+
+
 }

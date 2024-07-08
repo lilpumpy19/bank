@@ -15,7 +15,8 @@ import ru.shchegol.deal.entity.Client;
 import ru.shchegol.deal.entity.Credit;
 import ru.shchegol.deal.entity.Statement;
 import ru.shchegol.deal.mapper.DealMapper;
-import ru.shchegol.dto.EmailMassageDto;
+import ru.shchegol.deal.service.MessageService;
+import ru.shchegol.dto.EmailMessageDto;
 import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
 import ru.shchegol.dto.ScoringDataDto;
@@ -47,7 +48,7 @@ public class DealServiceImpl implements DealService {
     private final ClientRepository clientRepository;
     private final CreditRepository creditRepository;
     private final DealMapper dealMapper;
-    private final KafkaTemplate<String, EmailMassageDto> kafkaTemplate;
+    private final MessageService messageService;
 
     @Value("${app.base-url}")
     private String BASE_URL;
@@ -68,8 +69,6 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public void selectLoanOffer(LoanOfferDto offer) {
-        kafkaTemplate.send("finish-registration",
-                new EmailMassageDto("a@gmail.com", Theme.OFFER,1L));
         Optional<Statement> optionalStatement = statementRepository.findById(offer.getStatementId());
 
         if (optionalStatement.isPresent()) {
@@ -81,6 +80,7 @@ public class DealServiceImpl implements DealService {
                             ChangeType.AUTOMATIC));
             statement.setAppliedOffer(offer);
             statementRepository.save(statement);
+            messageService.finishRegistration(offer.getStatementId().toString());
         } else {
             throw new StatementNotFoundException("Failed to get statement");
         }
@@ -88,7 +88,6 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public void finishRegistrationAndCalculate(String statementId, FinishRegistrationRequestDto request) {
-
         Optional<Statement> optionalStatement = statementRepository.findById(UUID.fromString(statementId));
         if (optionalStatement.isPresent()) {
             ScoringDataDto scoringDataDto = dealMapper.toScoringDataDto(request,optionalStatement.get());
@@ -103,6 +102,7 @@ public class DealServiceImpl implements DealService {
             creditRepository.save(credit);
             optionalStatement.get().setCreditId(credit);
             statementRepository.save(optionalStatement.get());
+            messageService.createDocuments(statementId);
         } else {
             throw new StatementNotFoundException("Failed to get statement with id " + statementId);
         }

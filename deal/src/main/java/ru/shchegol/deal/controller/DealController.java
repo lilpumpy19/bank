@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.shchegol.deal.service.MessageService;
 import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.deal.dto.LoanOfferDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
@@ -28,6 +29,7 @@ public class DealController {
 
 
     private final DealService dealService;
+    private final MessageService messageService;
 
     @PostMapping("/statement")
     @Operation(summary = "Calculate loan conditions",
@@ -78,4 +80,24 @@ public class DealController {
         log.info("finishRegistrationAndCalculate: success");
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/document/{statementId}/send")
+    public ResponseEntity<Void> sendDocument(@PathVariable String statementId){
+        messageService.sendDocuments(statementId);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/document/{statementId}/sign")
+    public ResponseEntity<Void> signDocument(@PathVariable String statementId){
+        messageService.creditIssued(statementId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/document/{statementId}/code")
+    public ResponseEntity<Void> codeDocument(@PathVariable String statementId){
+        messageService.sendSes(statementId);
+        return ResponseEntity.ok().build();
+    }
+
+
+
 }

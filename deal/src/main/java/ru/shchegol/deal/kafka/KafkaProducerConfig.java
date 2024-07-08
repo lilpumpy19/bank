@@ -9,7 +9,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import ru.shchegol.dto.EmailMassageDto;
+import ru.shchegol.dto.EmailMessageDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class KafkaProducerConfig {
     private String bootstrapAddress;
 
     @Bean
-    public ProducerFactory<String, EmailMassageDto> producerFactory() {
+    public ProducerFactory<String, EmailMessageDto> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -35,7 +35,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, EmailMassageDto> kafkaTemplate() {
+    public KafkaTemplate<String, EmailMessageDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }
