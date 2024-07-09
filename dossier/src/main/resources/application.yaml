@@ -2,6 +2,19 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: shchegolevilya1@gmail.com
+    password: yrsiqgzwiiugfgvi
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 server:
   port: 8083
+
+
