@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import ru.shchegol.dossier.service.EmailService;
 import ru.shchegol.dto.EmailMessageDto;
 
+import javax.mail.MessagingException;
+
 @Component
 @RequiredArgsConstructor
 public class KafkaListenerExample {
@@ -20,8 +22,8 @@ public class KafkaListenerExample {
     @KafkaListener(topics = "create-documents",
             groupId = "group1",
             containerFactory = "finishRegistrationKafkaListenerContainerFactory")
-    void listener2(EmailMessageDto emailMessageDto) {
-        emailService.send(emailMessageDto, "create-documents");
+    void listener2(EmailMessageDto emailMessageDto) throws MessagingException {
+        emailService.sendWithAttachment(emailMessageDto, "create-documents");
     }
 
     @KafkaListener(topics = "send-documents",
