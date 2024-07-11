@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.shchegol.deal.service.MessageService;
 import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.deal.dto.LoanOfferDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
@@ -25,6 +26,8 @@ class DealControllerTest {
     private DealController dealController;
     @Mock
     private DealService dealService;
+    @Mock
+    private MessageService messageService;
 
 
 
@@ -65,6 +68,31 @@ class DealControllerTest {
         ResponseEntity<Void> response = dealController.finishRegistrationAndCalculate(statementId, request);
 
         verify(dealService, times(1)).finishRegistrationAndCalculate(statementId, request);
+        assertEquals(ResponseEntity.ok().build(), response);
+    }
+
+
+    @Test
+    void sendDocument_ShouldReturnOk() {
+        String statementId = UUID.randomUUID().toString();
+        ResponseEntity<Void> response = dealController.sendDocument(statementId);
+        verify(messageService, times(1)).sendDocuments(statementId);
+        assertEquals(ResponseEntity.ok().build(), response);
+    }
+
+    @Test
+    void signDocument_ShouldReturnOk() {
+        String statementId = UUID.randomUUID().toString();
+        ResponseEntity<Void> response = dealController.signDocument(statementId);
+        verify(messageService, times(1)).creditIssued(statementId);
+        assertEquals(ResponseEntity.ok().build(), response);
+    }
+
+    @Test
+    void codeDocument_ShouldReturnOk() {
+        String statementId = UUID.randomUUID().toString();
+        ResponseEntity<Void> response = dealController.codeDocument(statementId);
+        verify(messageService, times(1)).sendSes(statementId);
         assertEquals(ResponseEntity.ok().build(), response);
     }
 }

@@ -20,6 +20,7 @@ import ru.shchegol.deal.mapper.DealMapper;
 import ru.shchegol.deal.repository.ClientRepository;
 import ru.shchegol.deal.repository.CreditRepository;
 import ru.shchegol.deal.repository.StatementRepository;
+import ru.shchegol.deal.service.MessageService;
 import ru.shchegol.dto.EmploymentDto;
 import ru.shchegol.dto.FinishRegistrationRequestDto;
 import ru.shchegol.dto.LoanStatementRequestDto;
@@ -49,6 +50,9 @@ class DealServiceImplTest {
     @Mock
     private DealMapper dealMapper;
 
+    @Mock
+    MessageService messageService;
+
 
     @InjectMocks
     private DealServiceImpl dealService;
@@ -64,7 +68,7 @@ class DealServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        dealService = new DealServiceImpl(restTemplate, statementRepository, clientRepository, creditRepository,dealMapper);
+        dealService = new DealServiceImpl(restTemplate, statementRepository, clientRepository, creditRepository,dealMapper,messageService);
         loanStatementRequestDto = new LoanStatementRequestDto();
 
         finishRegistrationRequestDto = new FinishRegistrationRequestDto();
