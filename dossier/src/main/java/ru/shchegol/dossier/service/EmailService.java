@@ -8,6 +8,6 @@ public interface EmailService {
 
     void send(EmailMessageDto message, String text);
 
-    public void sendWithAttachment(EmailMessageDto emailMessage, String text) throws MessagingException;
+    public void sendWithAttachment(EmailMessageDto emailMessage, String text);
 
 }

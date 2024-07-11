@@ -82,22 +82,36 @@ public class DealController {
     }
 
     @PostMapping("/document/{statementId}/send")
+    @Operation(summary = "Request to send documents")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200"),
+    })
     public ResponseEntity<Void> sendDocument(@PathVariable String statementId){
+        log.info("sendDocument: statementId={}", statementId);
         messageService.sendDocuments(statementId);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "Request to sign documents")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200"),
+    })
     @PostMapping("/document/{statementId}/sign")
     public ResponseEntity<Void> signDocument(@PathVariable String statementId){
+        log.info("signDocument: statementId={}", statementId);
         messageService.creditIssued(statementId);
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Request to send code")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200"),
+    })
     @PostMapping("/document/{statementId}/code")
     public ResponseEntity<Void> codeDocument(@PathVariable String statementId){
+        log.info("codeDocument: statementId={}", statementId);
         messageService.sendSes(statementId);
         return ResponseEntity.ok().build();
     }
-
-
 
 }
