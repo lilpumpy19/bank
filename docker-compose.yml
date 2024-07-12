@@ -18,6 +18,7 @@ services:
         env_file:
             - .env
     kafka:
+        user: root
         image: confluentinc/cp-kafka:7.4.4
         depends_on:
             - zookeeper
