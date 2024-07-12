@@ -12,12 +12,10 @@ import ru.shchegol.deal.entity.Statement;
 import ru.shchegol.deal.exception.StatementNotFoundException;
 import ru.shchegol.deal.repository.StatementRepository;
 import ru.shchegol.dto.EmailMessageDto;
-import ru.shchegol.dto.enums.Theme;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

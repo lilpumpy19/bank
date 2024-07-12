@@ -26,8 +26,13 @@ services:
             - "9092:9092"
         env_file:
             - .env
+        volumes:
+            -   kafka_logs:/kafka/logs
+
 
 
 volumes:
     postgres_volume:
+        driver: local
+    kafka_logs:
         driver: local

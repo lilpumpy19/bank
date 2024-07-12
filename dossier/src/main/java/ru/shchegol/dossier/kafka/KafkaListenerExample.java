@@ -15,24 +15,24 @@ import javax.mail.MessagingException;
 public class KafkaListenerExample {
     private final EmailService emailService;
     @KafkaListener(topics = "finish-registration",
-            groupId = "group1",
-            containerFactory = "KafkaListenerContainerFactory")
+            groupId = "bank_consumer_group",
+            containerFactory = "kafkaListenerContainerFactory")
     void listenerFinishRegistration(EmailMessageDto emailMessageDto) {
         emailService.send(emailMessageDto, "finish-registration");
         log.info("listener: {}", emailMessageDto);
     }
 
     @KafkaListener(topics = "create-documents",
-            groupId = "group1",
-            containerFactory = "KafkaListenerContainerFactory")
+            groupId = "bank_consumer_group",
+            containerFactory = "kafkaListenerContainerFactory")
     void listenerCreateDocuments(EmailMessageDto emailMessageDto){
         emailService.sendWithAttachment(emailMessageDto, "create-documents");
         log.info("listener: {}", emailMessageDto);
     }
 
     @KafkaListener(topics = "send-documents",
-            groupId = "group1",
-            containerFactory = "KafkaListenerContainerFactory")
+            groupId = "bank_consumer_group",
+            containerFactory = "kafkaListenerContainerFactory")
     void listenerSendDocuments(EmailMessageDto emailMessageDto) {
         emailService.send(emailMessageDto, "send-documents");
         log.info("listener: {}", emailMessageDto);
@@ -40,8 +40,8 @@ public class KafkaListenerExample {
 
 
     @KafkaListener(topics = "send-ses",
-            groupId = "group1",
-            containerFactory = "KafkaListenerContainerFactory")
+            groupId = "bank_consumer_group",
+            containerFactory = "kafkaListenerContainerFactory")
     void listenerSendSes(EmailMessageDto emailMessageDto) {
         int randomCode = 100000 + (int) (Math.random() * 900000);;
         emailService.send(emailMessageDto, "ses-code: " + randomCode);
@@ -50,16 +50,16 @@ public class KafkaListenerExample {
 
 
     @KafkaListener(topics = "credit-issued",
-            groupId = "group1",
-            containerFactory = "KafkaListenerContainerFactory")
+            groupId = "bank_consumer_group",
+            containerFactory = "kafkaListenerContainerFactory")
     void listenerCreditIssued(EmailMessageDto emailMessageDto) {
         emailService.send(emailMessageDto, "credit-issued");
         log.info("listener: {}", emailMessageDto);
     }
 
     @KafkaListener(topics = "statement-denied",
-            groupId = "group1",
-            containerFactory = "KafkaListenerContainerFactory")
+            groupId = "bank_consumer_group",
+            containerFactory = "kafkaListenerContainerFactory")
     void listenerStatementDenied(EmailMessageDto emailMessageDto) {
         emailService.send(emailMessageDto, "statement-denied");
         log.info("listener: {}", emailMessageDto);
