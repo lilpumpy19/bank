@@ -1,0 +1,8 @@
+server:
+  port: 8888
+
+app:
+  url:
+    statement: http://localhost:8082/statement
+    deal: http://localhost:8081/deal
+
